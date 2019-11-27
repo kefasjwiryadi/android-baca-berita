@@ -38,7 +38,7 @@ class AppRepository(
         withContext(Dispatchers.IO) {
             Log.d(TAG, "refreshArticles: getting articles $category from network...")
             val articlesContainer =
-                newsApiService.getArticles(category = category, page = 1).await()
+                newsApiService.getArticles(category = category, page = 1)
             val articles = articlesContainer.articles
             articles.fillArticleData(category, articlesContainer.totalResults, 1)
             Log.d(
@@ -56,7 +56,7 @@ class AppRepository(
     suspend fun loadNextPage(category: String, page: Int) {
         withContext(Dispatchers.IO) {
             val articlesContainer =
-                newsApiService.getArticles(category = category, page = page).await()
+                newsApiService.getArticles(category = category, page = page)
             val articles = articlesContainer.articles
             articles.fillArticleData(category, articlesContainer.totalResults, page)
             articleDao.insertArticles(articles)
@@ -77,7 +77,7 @@ class AppRepository(
 
     suspend fun searchArticles(query: String, page: Int) = withContext(Dispatchers.IO) {
         val articlesNetworkContainer =
-            newsApiService.searchArticles(query = query, page = page).await()
+            newsApiService.searchArticles(query = query, page = page)
         val articles = articlesNetworkContainer.articles
         articles.fillArticleData("search", articlesNetworkContainer.totalResults, page)
         return@withContext articles

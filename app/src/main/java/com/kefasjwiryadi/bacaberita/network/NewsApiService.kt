@@ -1,33 +1,30 @@
 package com.kefasjwiryadi.bacaberita.network
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.kefasjwiryadi.bacaberita.BuildConfig
-import kotlinx.coroutines.Deferred
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface NewsApiService {
 
     @GET(TOP_HEADLINES)
-    fun getArticles(
+    suspend fun getArticles(
         @Query(CATEGORY_KEY) category: String = CATEGORY_DEF_VALUE,
         @Query(API_KEY_KEY) apiKey: String = API_KEY_DEF_VALUE,
         @Query(COUNTRY_KEY) country: String = COUNTRY_DEF_VALUE,
         @Query(PAGE_SIZE_KEY) pageSize: Int = PAGE_SIZE_DEF_VALUE,
         @Query(PAGE_KEY) page: Int = PAGE_DEF_VALUE
-    ): Deferred<ArticlesNetworkContainer>
+    ): ArticlesNetworkContainer
 
     @GET(EVERYTHING)
-    fun searchArticles(
+    suspend fun searchArticles(
         @Query(QUERY_KEY) query: String = QUERY_DEF_VALUE,
         @Query(API_KEY_KEY) apiKey: String = API_KEY_DEF_VALUE,
         @Query(LANGUAGE_KEY) language: String = LANGUAGE_DEF_VALUE,
         @Query(PAGE_SIZE_KEY) pageSize: Int = PAGE_SIZE_DEF_VALUE,
         @Query(PAGE_KEY) page: Int = PAGE_DEF_VALUE
-    ): Deferred<ArticlesNetworkContainer>
+    ): ArticlesNetworkContainer
 
     companion object {
 
@@ -74,7 +71,6 @@ interface NewsApiService {
                 if (localInstance == null) {
                     localInstance = Retrofit.Builder()
                         .baseUrl(BASE_URL)
-                        .addCallAdapterFactory(CoroutineCallAdapterFactory())
                         .addConverterFactory(GsonConverterFactory.create())
                         .build()
                         .create(NewsApiService::class.java)
