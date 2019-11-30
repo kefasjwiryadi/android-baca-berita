@@ -100,6 +100,12 @@ class AppRepository(
         }
     }
 
+    suspend fun insertArticle(article: Article) {
+        withContext(Dispatchers.IO) {
+            articleDao.insertArticle(article)
+        }
+    }
+
     suspend fun searchArticles(query: String, page: Int) = withContext(Dispatchers.IO) {
         val articlesNetworkContainer =
             newsApiService.searchArticles(query = query, page = page)
@@ -110,6 +116,12 @@ class AppRepository(
             articlesNetworkContainer.totalResults,
             page
         )
+    }
+
+    fun getArticleLd(url: String): LiveData<Article> = articleDao.getArticleLd(url)
+
+    suspend fun getArticle(url: String): Article? = withContext(Dispatchers.IO) {
+        return@withContext articleDao.getArticle(url)
     }
 
     companion object {

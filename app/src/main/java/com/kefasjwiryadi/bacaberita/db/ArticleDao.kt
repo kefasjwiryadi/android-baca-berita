@@ -55,4 +55,10 @@ abstract class ArticleDao {
 
     @Query("SELECT * FROM article_table WHERE favorite > 0 ORDER BY favorite DESC")
     abstract fun getFavoriteArticles(): LiveData<List<Article>>
+
+    @Query("SELECT * FROM article_table WHERE url = :url")
+    abstract fun getArticleLd(url: String): LiveData<Article>
+
+    @Query("SELECT * FROM article_table WHERE url = :url")
+    abstract suspend fun getArticle(url: String): Article?
 }

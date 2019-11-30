@@ -2,9 +2,11 @@ package com.kefasjwiryadi.bacaberita.ui.common
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
@@ -12,7 +14,6 @@ import com.kefasjwiryadi.bacaberita.R
 import com.kefasjwiryadi.bacaberita.databinding.ArticleDetailFragmentBinding
 import com.kefasjwiryadi.bacaberita.di.Injection
 import com.kefasjwiryadi.bacaberita.domain.Article
-import com.kefasjwiryadi.bacaberita.util.clearUrl
 import com.kefasjwiryadi.bacaberita.util.openWebsiteUrl
 import com.kefasjwiryadi.bacaberita.util.share
 import com.kefasjwiryadi.bacaberita.util.toDateFormat
@@ -46,18 +47,39 @@ class ArticleDetailFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
-//        viewModel.isArticleFavorited.observe(viewLifecycleOwner, Observer {
-//            Log.d(TAG, "onViewCreated: $it")
-//            if (it != null) {
-//                menu.getItem(1).setIcon(
-//                    if (it) {
-//                        R.drawable.ic_save_detail_fill
-//                    } else {
-//                        R.drawable.ic_save_detail_outline
-//                    }
-//                )
-//            }
-//        })
+        viewModel.articleLd.observe(viewLifecycleOwner, Observer { article ->
+            if (article != null) {
+                Glide.with(context!!).load(article.urlToImage)
+                    .placeholder(R.drawable.image_placeholder)
+                    .into(binding.articleDetailImage)
+                binding.articleDetailTitle.text = article.title
+                binding.articleDetailContent.text = article.content
+                binding.articleDetailAuthor.text = article.author
+                binding.articleDetailPublishedAt.text =
+                    "Diterbitkan: ${article.publishedAt?.toDateFormat()}"
+                binding.articleDetailDescription.text = article.description
+                binding.articleDetailSource.text = article.source?.name
+
+                binding.readMoreButton.setOnClickListener {
+                    openWebsiteUrl(context!!, article.url)
+                }
+
+                menu.getItem(1).setIcon(
+                    if (article.favorite > 0) {
+                        R.drawable.ic_save_detail_fill
+                    } else {
+                        R.drawable.ic_save_detail_outline
+                    }
+                )
+            }
+        })
+
+        viewModel.eventToast.observe(viewLifecycleOwner, Observer {
+            if (it != null && it.isNotEmpty()) {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                viewModel.doneToast()
+            }
+        })
 
         (activity as AppCompatActivity).setSupportActionBar(binding.articleDetailToolbar)
 
@@ -66,19 +88,6 @@ class ArticleDetailFragment : Fragment() {
         binding.articleDetailToolbar.navigationIcon =
             resources.getDrawable(R.drawable.ic_back_detail)
 
-        Glide.with(context!!).load(article.urlToImage).placeholder(R.drawable.image_placeholder)
-            .into(binding.articleDetailImage)
-        binding.articleDetailTitle.text = article.title
-        binding.articleDetailContent.text = article.content
-        binding.articleDetailAuthor.text = article.author
-        binding.articleDetailPublishedAt.text =
-            "Diterbitkan: ${article.publishedAt?.toDateFormat()}"
-        binding.articleDetailDescription.text = article.description
-        binding.articleDetailSource.text = article.source?.name
-
-        binding.readMoreButton.setOnClickListener {
-            openWebsiteUrl(context!!, article.url.clearUrl())
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -90,7 +99,7 @@ class ArticleDetailFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.share_action -> article.share(context!!)
-//            R.id.save_action -> viewModel.saveArticle()
+            R.id.save_action -> viewModel.saveArticle()
         }
         return super.onOptionsItemSelected(item)
     }
