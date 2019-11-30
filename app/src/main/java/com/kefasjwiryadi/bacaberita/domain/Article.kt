@@ -18,6 +18,7 @@ data class Article(
     var urlToImage: String?,
     var publishedAt: String?,
     var content: String?,
+    var fullContent: String?,
     var favorite: Long = 0
 ) : Parcelable
 

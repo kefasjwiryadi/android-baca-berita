@@ -1,5 +1,6 @@
 package com.kefasjwiryadi.bacaberita.ui.common
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.repository.AppRepository
@@ -22,6 +23,13 @@ class ArticleDetailViewModel(
             if (appRepository.getArticle(article.url) == null) {
                 appRepository.insertArticle(article)
             }
+            if (!article.content.isNullOrEmpty() && article.fullContent.isNullOrEmpty()) {
+                try {
+                    appRepository.getFullContent(article)
+                } catch (e: Exception) {
+                    Log.d(TAG, "$e")
+                }
+            }
         }
     }
 
@@ -41,6 +49,10 @@ class ArticleDetailViewModel(
 
     fun doneToast() {
         _eventToast.value = ""
+    }
+
+    companion object {
+        private const val TAG = "ArticleDetailViewModel"
     }
 }
 

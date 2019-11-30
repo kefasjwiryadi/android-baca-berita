@@ -15,6 +15,7 @@ import com.kefasjwiryadi.bacaberita.databinding.ArticleDetailFragmentBinding
 import com.kefasjwiryadi.bacaberita.di.Injection
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.util.openWebsiteUrl
+import com.kefasjwiryadi.bacaberita.util.setTextHtml
 import com.kefasjwiryadi.bacaberita.util.share
 import com.kefasjwiryadi.bacaberita.util.toDateFormat
 
@@ -53,12 +54,25 @@ class ArticleDetailFragment : Fragment() {
                     .placeholder(R.drawable.image_placeholder)
                     .into(binding.articleDetailImage)
                 binding.articleDetailTitle.text = article.title
-                binding.articleDetailContent.text = article.content
                 binding.articleDetailAuthor.text = article.author
                 binding.articleDetailPublishedAt.text =
                     "Diterbitkan: ${article.publishedAt?.toDateFormat()}"
                 binding.articleDetailDescription.text = article.description
                 binding.articleDetailSource.text = article.source?.name
+
+                // Set content
+                when {
+                    article.fullContent != null -> {
+                        binding.articleDetailContent.setTextHtml(article.fullContent!!)
+                    }
+                    article.content != null -> {
+                        binding.articleDetailContent.text = article.content
+                    }
+                    else -> {
+                        binding.articleDetailContent.text =
+                            "Konten untuk artikel ini tidak tersedia"
+                    }
+                }
 
                 binding.readMoreButton.setOnClickListener {
                     openWebsiteUrl(context!!, article.url)
@@ -75,7 +89,7 @@ class ArticleDetailFragment : Fragment() {
         })
 
         viewModel.eventToast.observe(viewLifecycleOwner, Observer {
-            if (it != null && it.isNotEmpty()) {
+            if (!it.isNullOrEmpty()) {
                 Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                 viewModel.doneToast()
             }

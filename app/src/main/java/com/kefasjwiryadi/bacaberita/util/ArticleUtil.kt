@@ -4,18 +4,27 @@ import android.app.Activity
 import android.content.Context
 import androidx.core.app.ShareCompat
 import com.kefasjwiryadi.bacaberita.domain.Article
+import org.jsoup.Jsoup
 import org.ocpsoft.prettytime.PrettyTime
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.format.DateTimeFormatter
 import java.util.*
 
-fun String.clearUrl(): String {
-    return clean("<")
-}
+private const val TAG = "ArticleUtil"
 
 fun String.cleanContent(): String {
-    return clean("[")
+    var inWhiteSpace = false
+
+    val sb = StringBuilder()
+    forEachIndexed { i, c ->
+        if (!c.isWhitespace()) {
+            sb.append(c)
+            inWhiteSpace = false
+        } else if (!inWhiteSpace && c.isWhitespace()) {
+            sb.append(" ")
+            inWhiteSpace = true
+        }
+    }
+    return sb.toString()
 }
 
 fun String.cleanTitle(): String {
@@ -33,6 +42,17 @@ private fun String.clean(pattern: String): String {
         this
     } else {
         this.substring(0, endIndex)
+    }
+}
+
+fun Article.clean() {
+    title = title?.cleanTitle()
+    content = content?.cleanContent()
+}
+
+fun List<Article>.clean() {
+    forEach {
+        it.clean()
     }
 }
 
@@ -58,10 +78,10 @@ fun String.toPrettyTime(): String {
 
 fun Article.share(context: Context) {
     val sb = StringBuilder(title ?: "")
-    content?.let {
+    description?.let {
         sb.append("\n\n$it")
     }
-    sb.append("\n\nBaca selengkapnya di ${url.clearUrl()}")
+    sb.append("\n\nBaca selengkapnya di $url")
 
     ShareCompat.IntentBuilder.from(context as Activity)
         .setType("text/plain")
@@ -69,3 +89,12 @@ fun Article.share(context: Context) {
         .startChooser()
 }
 
+fun String.getContent(partialContent: String): String {
+    val doc = Jsoup.parse(this)
+    var paragraphs =
+        doc.select("div:contains(${partialContent.substring(0, 30)})").last()
+    if (paragraphs == null) {
+        paragraphs = doc.select("div:contains(${partialContent.substring(30, 60)})").last()
+    }
+    return paragraphs.toString()
+}

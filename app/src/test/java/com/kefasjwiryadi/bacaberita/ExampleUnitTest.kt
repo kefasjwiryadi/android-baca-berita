@@ -1,13 +1,10 @@
 package com.kefasjwiryadi.bacaberita
 
-import com.kefasjwiryadi.bacaberita.util.clearUrl
+import com.kefasjwiryadi.bacaberita.util.cleanContent
 import com.kefasjwiryadi.bacaberita.util.toDateFormat
 import com.kefasjwiryadi.bacaberita.util.toMillis
-import com.kefasjwiryadi.bacaberita.util.toPrettyTime
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
-import org.ocpsoft.prettytime.PrettyTime
 import java.util.*
 
 /**
@@ -21,17 +18,26 @@ class ExampleUnitTest {
         assertEquals(4, 2 + 2)
     }
 
-    @Test
-    fun cleanUrlIsCorrect() {
-        val originalUrl =
-            "https://banjarmasin.tribunnews.com/2019/11/17/kesalahan-lina-disinggung-sule-tanggapi-isu-ibu-rizky-febian-ditinggal-suami-baru-saat-hamil-besar<entertainment"
-        val cleanedUrl =
-            "https://banjarmasin.tribunnews.com/2019/11/17/kesalahan-lina-disinggung-sule-tanggapi-isu-ibu-rizky-febian-ditinggal-suami-baru-saat-hamil-besar"
-        assertEquals(cleanedUrl, originalUrl.clearUrl())
+//    @Test
+//    fun cleanUrlIsCorrect() {
+//        val originalUrl =
+//            "https://banjarmasin.tribunnews.com/2019/11/17/kesalahan-lina-disinggung-sule-tanggapi-isu-ibu-rizky-febian-ditinggal-suami-baru-saat-hamil-besar<entertainment"
+//        val cleanedUrl =
+//            "https://banjarmasin.tribunnews.com/2019/11/17/kesalahan-lina-disinggung-sule-tanggapi-isu-ibu-rizky-febian-ditinggal-suami-baru-saat-hamil-besar"
+//        assertEquals(cleanedUrl, originalUrl.clearUrl())
+//
+//        val notFlaggedUrl =
+//            "https://asdf.tribunnews.com/2019/11/17/kesalahan-lina-disinggung-sule-tanggapi-isu-ibu-rizky-febian-ditinggal-suami-baru-saat-hamil-besar"
+//        assertEquals(notFlaggedUrl, notFlaggedUrl.clearUrl())
+//    }
 
-        val notFlaggedUrl =
-            "https://asdf.tribunnews.com/2019/11/17/kesalahan-lina-disinggung-sule-tanggapi-isu-ibu-rizky-febian-ditinggal-suami-baru-saat-hamil-besar"
-        assertEquals(notFlaggedUrl, notFlaggedUrl.clearUrl())
+    @Test
+    fun cleanContentIsCorrect() {
+        val content =
+            "JAKARTA, KOMPAS.com -\r\nMenteri Pendidikan dan Kebudayaan (Mendikbud) Nadiem Makarim mengungkapkan alasan yang melatarbelakangi rencana penghapusan ujian nasional (UN). \r\n Menurut dia, ada keinginan untuk menghindari dampak negatif dari UN tersebut.\r\n \"Banyak s… [+1517 chars]"
+        val expected =
+            "JAKARTA, KOMPAS.com - Menteri Pendidikan dan Kebudayaan (Mendikbud) Nadiem Makarim mengungkapkan alasan yang melatarbelakangi rencana penghapusan ujian nasional (UN). Menurut dia, ada keinginan untuk menghindari dampak negatif dari UN tersebut. \"Banyak s… [+1517 chars]"
+        assertEquals(expected, content.cleanContent())
     }
 
     @Test

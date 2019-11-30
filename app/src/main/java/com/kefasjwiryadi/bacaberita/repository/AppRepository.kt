@@ -9,6 +9,8 @@ import com.kefasjwiryadi.bacaberita.domain.ArticleFetchResult
 import com.kefasjwiryadi.bacaberita.domain.ArticleSearchResult
 import com.kefasjwiryadi.bacaberita.network.NewsApiService
 import com.kefasjwiryadi.bacaberita.util.AbsentLiveData
+import com.kefasjwiryadi.bacaberita.util.clean
+import com.kefasjwiryadi.bacaberita.util.getContent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -47,6 +49,7 @@ class AppRepository(
             val articlesContainer =
                 newsApiService.getArticles(category = category, page = 1)
             val articles = articlesContainer.articles
+            articles.clean()
             Log.d(
                 TAG,
                 "refreshArticles: articles from network: \n\t${articles[0]}\n\t${articles[1]}"
@@ -70,6 +73,7 @@ class AppRepository(
             val articlesContainer =
                 newsApiService.getArticles(category = category, page = page)
             val articles = articlesContainer.articles
+            articles.clean()
             articleDao.insertArticles(articles)
 
             // Merge result with previous result
@@ -110,6 +114,7 @@ class AppRepository(
         val articlesNetworkContainer =
             newsApiService.searchArticles(query = query, page = page)
         val articles = articlesNetworkContainer.articles
+        articles.clean()
         return@withContext ArticleSearchResult(
             query,
             articles,
@@ -117,6 +122,15 @@ class AppRepository(
             page
         )
     }
+
+    suspend fun getFullContent(article: Article) = withContext(Dispatchers.IO) {
+        if (article.content != null) {
+            val html = newsApiService.getHtml(article.url)
+            article.fullContent = html.getContent(article.content!!)
+            articleDao.insertArticle(article)
+        }
+    }
+
 
     fun getArticleLd(url: String): LiveData<Article> = articleDao.getArticleLd(url)
 

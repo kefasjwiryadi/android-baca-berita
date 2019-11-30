@@ -3,8 +3,10 @@ package com.kefasjwiryadi.bacaberita.network
 import com.kefasjwiryadi.bacaberita.BuildConfig
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import retrofit2.http.Url
 
 interface NewsApiService {
 
@@ -25,6 +27,9 @@ interface NewsApiService {
         @Query(PAGE_SIZE_KEY) pageSize: Int = PAGE_SIZE_DEF_VALUE,
         @Query(PAGE_KEY) page: Int = PAGE_DEF_VALUE
     ): ArticlesNetworkContainer
+
+    @GET
+    suspend fun getHtml(@Url url: String): String
 
     companion object {
 
@@ -71,6 +76,7 @@ interface NewsApiService {
                 if (localInstance == null) {
                     localInstance = Retrofit.Builder()
                         .baseUrl(BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
                         .addConverterFactory(GsonConverterFactory.create())
                         .build()
                         .create(NewsApiService::class.java)
