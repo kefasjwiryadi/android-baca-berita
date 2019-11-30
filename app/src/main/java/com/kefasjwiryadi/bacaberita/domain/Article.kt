@@ -18,10 +18,7 @@ data class Article(
     var urlToImage: String?,
     var publishedAt: String?,
     var content: String?,
-    var category: String?,
-    var timeRetrieved: Long = System.currentTimeMillis(),
-    var onPage: Int = 1,
-    var totalResults: Int
+    var favorite: Long = 0
 ) : Parcelable
 
 @Parcelize

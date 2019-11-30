@@ -5,8 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.kefasjwiryadi.bacaberita.domain.Article
+import com.kefasjwiryadi.bacaberita.domain.ArticleFetchResult
 
-@Database(entities = [Article::class], version = 1, exportSchema = false)
+@Database(entities = [Article::class, ArticleFetchResult::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun articleDao(): ArticleDao

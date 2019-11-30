@@ -1,25 +1,21 @@
 package com.kefasjwiryadi.bacaberita.ui.common
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
-
 import com.kefasjwiryadi.bacaberita.R
 import com.kefasjwiryadi.bacaberita.databinding.ArticleDetailFragmentBinding
 import com.kefasjwiryadi.bacaberita.di.Injection
 import com.kefasjwiryadi.bacaberita.domain.Article
-import com.kefasjwiryadi.bacaberita.ui.MainActivity
-import com.kefasjwiryadi.bacaberita.util.openWebsiteUrl
-import com.kefasjwiryadi.bacaberita.util.toDateFormat
 import com.kefasjwiryadi.bacaberita.util.clearUrl
+import com.kefasjwiryadi.bacaberita.util.openWebsiteUrl
 import com.kefasjwiryadi.bacaberita.util.share
+import com.kefasjwiryadi.bacaberita.util.toDateFormat
 
 class ArticleDetailFragment : Fragment() {
 
@@ -50,18 +46,18 @@ class ArticleDetailFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
-        viewModel.isArticleFavorited.observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, "onViewCreated: $it")
-            if (it != null) {
-                menu.getItem(1).setIcon(
-                    if (it) {
-                        R.drawable.ic_save_detail_fill
-                    } else {
-                        R.drawable.ic_save_detail_outline
-                    }
-                )
-            }
-        })
+//        viewModel.isArticleFavorited.observe(viewLifecycleOwner, Observer {
+//            Log.d(TAG, "onViewCreated: $it")
+//            if (it != null) {
+//                menu.getItem(1).setIcon(
+//                    if (it) {
+//                        R.drawable.ic_save_detail_fill
+//                    } else {
+//                        R.drawable.ic_save_detail_outline
+//                    }
+//                )
+//            }
+//        })
 
         (activity as AppCompatActivity).setSupportActionBar(binding.articleDetailToolbar)
 
@@ -94,7 +90,7 @@ class ArticleDetailFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.share_action -> article.share(context!!)
-            R.id.save_action -> viewModel.saveArticle()
+//            R.id.save_action -> viewModel.saveArticle()
         }
         return super.onOptionsItemSelected(item)
     }

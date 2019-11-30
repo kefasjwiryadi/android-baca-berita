@@ -3,10 +3,10 @@ package com.kefasjwiryadi.bacaberita.ui.search
 import android.util.Log
 import androidx.lifecycle.*
 import com.kefasjwiryadi.bacaberita.domain.Article
+import com.kefasjwiryadi.bacaberita.domain.ArticleSearchResult
 import com.kefasjwiryadi.bacaberita.network.NewsApiService
 import com.kefasjwiryadi.bacaberita.repository.AppRepository
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
 
@@ -24,6 +24,8 @@ class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
 
     private lateinit var query: String
 
+    private var currentSearchResult: ArticleSearchResult? = null
+
     fun onReachEnd() {
         val nextPage = getNextPage()
         if (nextPage != -1) {
@@ -32,9 +34,10 @@ class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
     }
 
     fun getNextPage(): Int {
-        val lastArticle = _articles.value?.last() ?: return -1
-        if (lastArticle.onPage * NewsApiService.PAGE_SIZE_DEF_VALUE < lastArticle.totalResults) {
-            return lastArticle.onPage + 1
+        val currentPage = currentSearchResult?.page ?: return -1
+        val totalResult = currentSearchResult?.totalResult ?: return -1
+        if (currentPage * NewsApiService.PAGE_SIZE_DEF_VALUE < totalResult) {
+            return currentPage + 1
         } else {
             return -1
         }
@@ -45,7 +48,8 @@ class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
             if (_isLoadingMore.value == false) {
                 _isLoadingMore.value = true
                 try {
-                    val articlesTemp = appRepository.searchArticles(query, page)
+                    currentSearchResult = appRepository.searchArticles(query, page)
+                    val articlesTemp = currentSearchResult!!.articles
                     if (articlesTemp.isNotEmpty()) {
                         _articles.value = ArrayList(_articles.value)
                         _articles.value?.addAll(articlesTemp)
@@ -64,7 +68,8 @@ class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
             try {
                 _isLoading.value = true
                 Log.d(TAG, "searchArticles: Searching query: $query")
-                _articles.value = ArrayList(appRepository.searchArticles(query, 1))
+                currentSearchResult = appRepository.searchArticles(query, 1)
+                _articles.value = ArrayList(currentSearchResult!!.articles)
                 Log.d(TAG, "searchArticles: Search finished: $query ${(_articles.value)?.get(0)}")
             } catch (e: Exception) {
                 Log.d(TAG, "searchArticles: $e")

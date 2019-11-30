@@ -1,20 +1,14 @@
 package com.kefasjwiryadi.bacaberita.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kefasjwiryadi.bacaberita.R
 import com.kefasjwiryadi.bacaberita.databinding.MainActivityBinding
 import com.kefasjwiryadi.bacaberita.util.setupWithNavController
@@ -61,6 +55,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+
+        binding.mainBottomNav.setOnNavigationItemReselectedListener {
+            Log.d(TAG, "setupBottomNavigation: reselected: $it")
+        }
 
     }
 

@@ -1,32 +1,28 @@
 package com.kefasjwiryadi.bacaberita.ui.common
 
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.repository.AppRepository
-import com.kefasjwiryadi.bacaberita.ui.favorite.FavoriteViewModel
-import kotlinx.coroutines.launch
 
 class ArticleDetailViewModel(
     private val appRepository: AppRepository,
     private val article: Article
 ) : ViewModel() {
 
-    fun saveArticle() {
-        if (isArticleFavorited.value == false) {
-            viewModelScope.launch {
-                appRepository.addArticleToFavorite(article)
-            }
-        } else {
-            viewModelScope.launch {
-                appRepository.deleteArticleFromFavorite(article)
-            }
-        }
-    }
-
-    val isArticleFavorited = appRepository.isArticleFavorited(article)
+//    fun saveArticle() {
+//        if (isArticleFavorited.value == false) {
+//            viewModelScope.launch {
+//                appRepository.addArticleToFavorite(article)
+//            }
+//        } else {
+//            viewModelScope.launch {
+//                appRepository.deleteArticleFromFavorite(article)
+//            }
+//        }
+//    }
+//
+//    val isArticleFavorited = appRepository.isArticleFavorited(article)
 }
 
 class ArticleDetailViewModelFactory(

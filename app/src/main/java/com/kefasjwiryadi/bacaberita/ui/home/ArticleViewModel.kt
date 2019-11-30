@@ -3,11 +3,10 @@ package com.kefasjwiryadi.bacaberita.ui.home
 import android.util.Log
 import androidx.lifecycle.*
 import com.kefasjwiryadi.bacaberita.domain.Article
-import com.kefasjwiryadi.bacaberita.network.NewsApiService
+import com.kefasjwiryadi.bacaberita.network.NewsApiService.Companion.PAGE_SIZE_DEF_VALUE
 import com.kefasjwiryadi.bacaberita.repository.AppRepository
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 private const val TAG = "ArticleViewModel"
 
@@ -41,9 +40,8 @@ class ArticleViewModel(
     }
 
     fun onFragmentResume() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             if (shouldRefresh()) {
-                loadMoreAllowed = false
                 refreshArticles()
             }
         }
@@ -52,9 +50,10 @@ class ArticleViewModel(
     fun onReachEnd() {
         viewModelScope.launch {
             if (loadMoreAllowed && isLoadingMore.value == false && hasNextPage()) {
-                val lastArticle = appRepository.getLastArticle(category) ?: return@launch
-                val nextPage = lastArticle.onPage + 1
+                val currentResult = appRepository.getArticleFetchResult(category) ?: return@launch
+                val nextPage = currentResult.page + 1
                 Log.d(TAG, "onReachEnd: $nextPage")
+                if (_isLoadingMore.value == true) return@launch
                 try {
                     _isLoadingMore.value = true
                     appRepository.loadNextPage(category, nextPage)
@@ -67,18 +66,18 @@ class ArticleViewModel(
     }
 
     private suspend fun hasNextPage(): Boolean {
-        val lastArticle = appRepository.getLastArticle(category) ?: return false
-        return lastArticle.onPage * NewsApiService.PAGE_SIZE_DEF_VALUE < lastArticle.totalResults
+        val currentResult = appRepository.getArticleFetchResult(category) ?: return false
+        return currentResult.page * PAGE_SIZE_DEF_VALUE < currentResult.totalResult
     }
 
     private suspend fun shouldRefresh(): Boolean {
-        val firstArticle = appRepository.getFirstArticle(category) ?: return true
-        val firstArticleMillis = firstArticle.timeRetrieved
-        val timeDiff = System.currentTimeMillis() - firstArticleMillis
+        val currentResult = appRepository.getArticleFetchResult(category) ?: return true
+        val firstRetrievedMillis = currentResult.firstRetrieved
+        val timeDiff = System.currentTimeMillis() - firstRetrievedMillis
         return if (timeDiff > REFRESH_RATE) {
             Log.d(
                 TAG,
-                "shouldRefresh: YES (${System.currentTimeMillis()} - $firstArticleMillis > $REFRESH_RATE)"
+                "shouldRefresh: YES (${System.currentTimeMillis()} - $firstRetrievedMillis > $REFRESH_RATE)"
             )
             true
         } else {
@@ -90,6 +89,7 @@ class ArticleViewModel(
 
     fun refreshArticles() {
         viewModelScope.launch {
+            loadMoreAllowed = false
             if (isLoading.value == false) {
                 _isLoading.value = true
                 Log.d(TAG, "refreshArticles: Loading start")
@@ -105,9 +105,16 @@ class ArticleViewModel(
         }
     }
 
-    fun addArticleToFavorite(article: Article) {
+    fun addFavoriteArticle(article: Article) {
         viewModelScope.launch {
-            appRepository.addArticleToFavorite(article)
+            appRepository.addFavoriteArticle(article)
+        }
+    }
+
+    fun removeFavoriteArticle(article: Article) {
+        viewModelScope.launch {
+            article.favorite = 0
+            appRepository.removeFavoriteArticle(article)
         }
     }
 

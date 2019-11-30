@@ -1,12 +1,10 @@
 package com.kefasjwiryadi.bacaberita.ui.common
 
-import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.app.ShareCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +13,6 @@ import com.kefasjwiryadi.bacaberita.R
 import com.kefasjwiryadi.bacaberita.databinding.ArticleItemBinding
 import com.kefasjwiryadi.bacaberita.databinding.SmallArticleItemBinding
 import com.kefasjwiryadi.bacaberita.domain.Article
-import com.kefasjwiryadi.bacaberita.ui.MainActivity
 import com.kefasjwiryadi.bacaberita.util.share
 import com.kefasjwiryadi.bacaberita.util.toPrettyTime
 

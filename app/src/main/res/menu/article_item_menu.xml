@@ -9,4 +9,8 @@
         android:id="@+id/save_action"
         android:title="Simpan" />
 
+    <item
+        android:id="@+id/remove_action"
+        android:title="Hapus" />
+
 </menu>

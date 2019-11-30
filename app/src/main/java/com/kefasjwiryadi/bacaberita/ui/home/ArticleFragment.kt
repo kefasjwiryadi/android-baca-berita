@@ -2,12 +2,12 @@ package com.kefasjwiryadi.bacaberita.ui.home
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -86,7 +86,9 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
 
         viewModel.articles.observe(viewLifecycleOwner, Observer {
             if (it != null) {
+                Log.d(TAG, "onViewCreated: ${it[0].title}")
                 adapter.submitList(it)
+                adapter.notifyDataSetChanged()
             }
         })
 
@@ -129,14 +131,29 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
     override fun onPopupMenuClick(view: View, article: Article) {
         val menu = PopupMenu(requireContext(), view)
         menu.inflate(R.menu.article_item_menu)
+
+        menu.menu.removeItem(
+            if (article.favorite > 0) {
+                R.id.save_action
+            } else {
+                R.id.remove_action
+            }
+        )
+
         menu.setOnMenuItemClickListener { menu ->
             when (menu.itemId) {
                 R.id.share_action -> {
                     article.share(requireContext())
                 }
                 R.id.save_action -> {
-                    viewModel.addArticleToFavorite(article)
-                    Toast.makeText(context!!, "Artikel tersimpan", Toast.LENGTH_SHORT).show()
+                    viewModel.addFavoriteArticle(article)
+                    Toast.makeText(context, "Artikel tersimpan ke favorit", Toast.LENGTH_SHORT)
+                        .show()
+                }
+                R.id.remove_action -> {
+                    viewModel.removeFavoriteArticle(article)
+                    Toast.makeText(context, "Artikel dihapus dari favorit", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
             return@setOnMenuItemClickListener true
