@@ -6,6 +6,7 @@ import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.domain.ArticleSearchResult
 import com.kefasjwiryadi.bacaberita.network.NewsApiService
 import com.kefasjwiryadi.bacaberita.repository.AppRepository
+import com.kefasjwiryadi.bacaberita.util.AbsentLiveData
 import kotlinx.coroutines.launch
 
 class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
@@ -26,6 +27,25 @@ class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
 
     private var currentSearchResult: ArticleSearchResult? = null
 
+    private val selectedArticle = MutableLiveData<Article>(null)
+
+    val eventShowPopupMenu = Transformations.switchMap(selectedArticle) {
+        if (it != null) {
+            liveData {
+                if (appRepository.getArticle(it.url) == null) {
+                    appRepository.insertArticle(it)
+                }
+                emit(appRepository.getArticle(it.url))
+            }
+        } else {
+            AbsentLiveData.create()
+        }
+    }
+
+    fun setSelectedArticle(article: Article?) {
+        selectedArticle.value = article
+    }
+
     fun onReachEnd() {
         val nextPage = getNextPage()
         if (nextPage != -1) {
@@ -33,13 +53,13 @@ class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
         }
     }
 
-    fun getNextPage(): Int {
+    private fun getNextPage(): Int {
         val currentPage = currentSearchResult?.page ?: return -1
         val totalResult = currentSearchResult?.totalResult ?: return -1
-        if (currentPage * NewsApiService.PAGE_SIZE_DEF_VALUE < totalResult) {
-            return currentPage + 1
+        return if (currentPage * NewsApiService.PAGE_SIZE_DEF_VALUE < totalResult) {
+            currentPage + 1
         } else {
-            return -1
+            -1
         }
     }
 
@@ -75,6 +95,18 @@ class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
                 Log.d(TAG, "searchArticles: $e")
             }
             _isLoading.value = false
+        }
+    }
+
+    fun addFavoriteArticle(article: Article) {
+        viewModelScope.launch {
+            appRepository.addFavoriteArticle(article)
+        }
+    }
+
+    fun removeFavoriteArticle(article: Article) {
+        viewModelScope.launch {
+            appRepository.removeFavoriteArticle(article)
         }
     }
 

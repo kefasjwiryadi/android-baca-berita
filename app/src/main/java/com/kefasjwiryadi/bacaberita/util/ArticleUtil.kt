@@ -2,7 +2,11 @@ package com.kefasjwiryadi.bacaberita.util
 
 import android.app.Activity
 import android.content.Context
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ShareCompat
+import com.kefasjwiryadi.bacaberita.R
 import com.kefasjwiryadi.bacaberita.domain.Article
 import org.jsoup.Jsoup
 import org.ocpsoft.prettytime.PrettyTime
@@ -97,4 +101,41 @@ fun String.getContent(partialContent: String): String {
         paragraphs = doc.select("div:contains(${partialContent.substring(30, 60)})").last()
     }
     return paragraphs.toString()
+}
+
+fun Article.showPopupMenu(
+    view: View,
+    saveArticle: (article: Article) -> Unit,
+    removeArticle: (article: Article) -> Unit
+) {
+    val menu = PopupMenu(view.context, view)
+    menu.inflate(R.menu.article_item_menu)
+
+    menu.menu.removeItem(
+        if (favorite > 0) {
+            R.id.save_action
+        } else {
+            R.id.remove_action
+        }
+    )
+
+    menu.setOnMenuItemClickListener { menu ->
+        when (menu.itemId) {
+            R.id.share_action -> {
+                share(view.context)
+            }
+            R.id.save_action -> {
+                saveArticle(this)
+                Toast.makeText(view.context, "Artikel tersimpan ke favorit", Toast.LENGTH_SHORT)
+                    .show()
+            }
+            R.id.remove_action -> {
+                removeArticle(this)
+                Toast.makeText(view.context, "Artikel dihapus dari favorit", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+        return@setOnMenuItemClickListener true
+    }
+    menu.show()
 }

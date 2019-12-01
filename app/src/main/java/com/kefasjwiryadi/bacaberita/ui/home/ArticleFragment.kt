@@ -5,8 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -19,7 +17,7 @@ import com.kefasjwiryadi.bacaberita.di.Injection
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.ui.common.ArticleAdapter
 import com.kefasjwiryadi.bacaberita.ui.common.OnArticleClickListener
-import com.kefasjwiryadi.bacaberita.util.share
+import com.kefasjwiryadi.bacaberita.util.showPopupMenu
 
 private const val TAG = "ArticleFragment"
 
@@ -129,35 +127,10 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
     }
 
     override fun onPopupMenuClick(view: View, article: Article) {
-        val menu = PopupMenu(requireContext(), view)
-        menu.inflate(R.menu.article_item_menu)
-
-        menu.menu.removeItem(
-            if (article.favorite > 0) {
-                R.id.save_action
-            } else {
-                R.id.remove_action
-            }
-        )
-
-        menu.setOnMenuItemClickListener { menu ->
-            when (menu.itemId) {
-                R.id.share_action -> {
-                    article.share(requireContext())
-                }
-                R.id.save_action -> {
-                    viewModel.addFavoriteArticle(article)
-                    Toast.makeText(context, "Artikel tersimpan ke favorit", Toast.LENGTH_SHORT)
-                        .show()
-                }
-                R.id.remove_action -> {
-                    viewModel.removeFavoriteArticle(article)
-                    Toast.makeText(context, "Artikel dihapus dari favorit", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            }
-            return@setOnMenuItemClickListener true
-        }
-        menu.show()
+        article.showPopupMenu(view, {
+            viewModel.addFavoriteArticle(article)
+        }, {
+            viewModel.removeFavoriteArticle(article)
+        })
     }
 }

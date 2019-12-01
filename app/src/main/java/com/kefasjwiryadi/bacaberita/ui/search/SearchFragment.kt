@@ -1,22 +1,22 @@
 package com.kefasjwiryadi.bacaberita.ui.search
 
 import android.os.Bundle
-import android.view.*
-import androidx.fragment.app.Fragment
-import android.widget.TextView
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.kefasjwiryadi.bacaberita.R
 import com.kefasjwiryadi.bacaberita.databinding.SearchFragmentBinding
 import com.kefasjwiryadi.bacaberita.di.Injection
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.ui.common.ArticleAdapter
 import com.kefasjwiryadi.bacaberita.ui.common.OnArticleClickListener
+import com.kefasjwiryadi.bacaberita.util.showPopupMenu
 
 class SearchFragment : Fragment(), OnArticleClickListener {
 
@@ -35,6 +35,8 @@ class SearchFragment : Fragment(), OnArticleClickListener {
 
         return binding.root
     }
+
+    private var currentPopupView: View? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -73,6 +75,20 @@ class SearchFragment : Fragment(), OnArticleClickListener {
             }
         })
 
+        viewModel.eventShowPopupMenu.observe(viewLifecycleOwner, Observer { article ->
+            if (article != null) {
+                currentPopupView?.let {
+                    article.showPopupMenu(it, {
+                        viewModel.addFavoriteArticle(article)
+                    }, {
+                        viewModel.removeFavoriteArticle(article)
+                    })
+                }
+                currentPopupView = null
+                viewModel.setSelectedArticle(null)
+            }
+        })
+
     }
 
     override fun onArticleClick(article: Article) {
@@ -84,7 +100,12 @@ class SearchFragment : Fragment(), OnArticleClickListener {
     }
 
     override fun onPopupMenuClick(view: View, article: Article) {
+        currentPopupView = view
+        viewModel.setSelectedArticle(article)
+    }
 
+    companion object {
+        private const val TAG = "SearchFragment"
     }
 
 }
