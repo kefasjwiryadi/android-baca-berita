@@ -66,7 +66,9 @@ class FavoriteFragment : Fragment(), OnArticleClickListener {
     }
 
     override fun onArticleClick(article: Article) {
-
+        findNavController().navigate(
+            FavoriteFragmentDirections.actionFavoriteDestToArticleDetailFragment(article)
+        )
     }
 
     override fun onPopupMenuClick(view: View, article: Article) {
