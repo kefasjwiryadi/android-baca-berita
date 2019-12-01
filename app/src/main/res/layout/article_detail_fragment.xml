@@ -138,17 +138,15 @@
 
         </androidx.core.widget.NestedScrollView>
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/read_more_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_margin="24dp"
-            android:backgroundTint="@color/colorAccent"
-            android:text="Baca Selengkapnya"
-            android:textAlignment="center"
-            android:textColor="@android:color/white" />
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            app:backgroundTint="@color/colorAccent"
+            app:srcCompat="@drawable/ic_read_more"
+            app:tint="@android:color/white" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

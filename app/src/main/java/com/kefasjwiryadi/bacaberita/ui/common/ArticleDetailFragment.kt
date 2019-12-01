@@ -29,7 +29,7 @@ class ArticleDetailFragment : Fragment() {
         Injection.provideArticleDetailViewModelFactory(requireContext(), article)
     }
 
-    private lateinit var menu: Menu
+    private var menu: Menu? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,7 +78,7 @@ class ArticleDetailFragment : Fragment() {
                     openWebsiteUrl(context!!, article.url)
                 }
 
-                menu.getItem(1).setIcon(
+                menu?.getItem(1)?.setIcon(
                     if (article.favorite > 0) {
                         R.drawable.ic_save_detail_fill
                     } else {
