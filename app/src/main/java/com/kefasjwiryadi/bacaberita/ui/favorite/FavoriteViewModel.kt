@@ -2,9 +2,25 @@ package com.kefasjwiryadi.bacaberita.ui.favorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.repository.AppRepository
+import kotlinx.coroutines.launch
 
-class FavoriteViewModel(appRepository: AppRepository) : ViewModel() {
+class FavoriteViewModel(private val appRepository: AppRepository) : ViewModel() {
+
+    fun addFavoriteArticle(article: Article) {
+        viewModelScope.launch {
+            appRepository.addFavoriteArticle(article)
+        }
+    }
+
+    fun removeFavoriteArticle(article: Article) {
+        viewModelScope.launch {
+            appRepository.removeFavoriteArticle(article)
+        }
+    }
+
     val favoriteArticles = appRepository.getFavoriteArticles()
 }
 

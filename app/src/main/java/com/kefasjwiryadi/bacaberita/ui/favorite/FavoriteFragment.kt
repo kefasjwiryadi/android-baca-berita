@@ -14,6 +14,7 @@ import com.kefasjwiryadi.bacaberita.di.Injection
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.ui.common.ArticleAdapter
 import com.kefasjwiryadi.bacaberita.ui.common.OnArticleClickListener
+import com.kefasjwiryadi.bacaberita.util.showPopupMenu
 
 class FavoriteFragment : Fragment(), OnArticleClickListener {
 
@@ -72,7 +73,11 @@ class FavoriteFragment : Fragment(), OnArticleClickListener {
     }
 
     override fun onPopupMenuClick(view: View, article: Article) {
-
+        article.showPopupMenu(view, {
+            viewModel.addFavoriteArticle(it)
+        }, {
+            viewModel.removeFavoriteArticle(it)
+        })
     }
 
     companion object {
