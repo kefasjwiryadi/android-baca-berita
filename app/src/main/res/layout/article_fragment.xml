@@ -8,6 +8,8 @@
 
         <import type="android.view.View" />
 
+        <import type="com.kefasjwiryadi.bacaberita.util.Status" />
+
         <variable
             name="viewModel"
             type="com.kefasjwiryadi.bacaberita.ui.home.ArticleViewModel" />
@@ -48,24 +50,14 @@
             tools:visibility="visible" />
 
         <ProgressBar
-            style="@style/Widget.AppCompat.ProgressBar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="@{viewModel.isLoadingMore() ? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.getStatus() == Status.LOADING_MORE ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
-<!--        <ImageView-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="100dp"-->
-        <!--            android:background="@android:color/holo_red_light"-->
-        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--            app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--            app:layout_constraintRight_toRightOf="parent"-->
-
-        <!--            />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

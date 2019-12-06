@@ -5,6 +5,8 @@ import androidx.lifecycle.*
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.network.NewsApiService.Companion.PAGE_SIZE_DEF_VALUE
 import com.kefasjwiryadi.bacaberita.repository.AppRepository
+import com.kefasjwiryadi.bacaberita.util.Status
+import com.kefasjwiryadi.bacaberita.util.isNotLoading
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -20,13 +22,9 @@ class ArticleViewModel(
 
     val articles = appRepository.getArticles(category)
 
-    private val _isLoading = MutableLiveData<Boolean>(false)
-    val isLoading: LiveData<Boolean>
-        get() = _isLoading
-
-    private val _isLoadingMore = MutableLiveData<Boolean>(false)
-    val isLoadingMore: LiveData<Boolean>
-        get() = _isLoadingMore
+    private val _status = MutableLiveData<Int>(Status.IDLE)
+    val status: LiveData<Int>
+        get() = _status
 
     private var loadMoreAllowed = false
 
@@ -49,18 +47,19 @@ class ArticleViewModel(
 
     fun onReachEnd() {
         viewModelScope.launch {
-            if (loadMoreAllowed && isLoadingMore.value == false && hasNextPage()) {
+            if (loadMoreAllowed && _status.value!!.isNotLoading() && hasNextPage()) {
                 val currentResult = appRepository.getArticleFetchResult(category) ?: return@launch
                 val nextPage = currentResult.page + 1
                 Log.d(TAG, "onReachEnd: $nextPage")
-                if (_isLoadingMore.value == true) return@launch
+                if (_status.value == Status.LOADING_MORE) return@launch
                 try {
-                    _isLoadingMore.value = true
+                    _status.value = Status.LOADING_MORE
                     appRepository.loadNextPage(category, nextPage)
+                    _status.value = Status.SUCCESS
                 } catch (e: Exception) {
+                    _status.value = Status.FAILURE
                     Log.d(TAG, "onReachEnd: $e")
                 }
-                _isLoadingMore.value = false
             }
         }
     }
@@ -90,16 +89,17 @@ class ArticleViewModel(
     fun refreshArticles() {
         viewModelScope.launch {
             loadMoreAllowed = false
-            if (isLoading.value == false) {
-                _isLoading.value = true
+            if (_status.value!!.isNotLoading()) {
+                _status.value = Status.LOADING
                 Log.d(TAG, "refreshArticles: Loading start")
                 try {
                     appRepository.refreshArticles(category)
                     loadMoreAllowed = true
+                    _status.value = Status.SUCCESS
                 } catch (e: Exception) {
                     Log.d(TAG, "refreshArticles: $e")
+                    _status.value = Status.FAILURE
                 }
-                _isLoading.value = false
                 Log.d(TAG, "refreshArticles: Loading finish")
             }
         }

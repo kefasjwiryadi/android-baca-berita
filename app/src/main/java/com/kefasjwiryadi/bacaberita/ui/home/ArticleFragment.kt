@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -17,6 +18,7 @@ import com.kefasjwiryadi.bacaberita.di.Injection
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.ui.common.ArticleAdapter
 import com.kefasjwiryadi.bacaberita.ui.common.OnArticleClickListener
+import com.kefasjwiryadi.bacaberita.util.Status
 import com.kefasjwiryadi.bacaberita.util.showPopupMenu
 
 private const val TAG = "ArticleFragment"
@@ -94,15 +96,28 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
             viewModel.refreshArticles()
         }
 
-        viewModel.isLoading.observe(viewLifecycleOwner, Observer {
+        viewModel.status.observe(viewLifecycleOwner, Observer {
             it?.let {
-                if (it) {
+                if (it == Status.LOADING) {
                     if (!binding.articleRefresh.isRefreshing) {
                         binding.articleLoadingProgressBar.visibility = View.VISIBLE
                     }
                 } else {
                     binding.articleRefresh.isRefreshing = false
                     binding.articleLoadingProgressBar.visibility = View.GONE
+                }
+
+                if (it == Status.FAILURE) {
+                    if (viewModel.articles.value.isNullOrEmpty()) {
+                        // TODO: Display error screen
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "Gagal mendapatkan data",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                    }
                 }
             }
         })

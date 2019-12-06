@@ -1,6 +1,7 @@
 package com.kefasjwiryadi.bacaberita.ui.search
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +42,9 @@ class SearchFragment : Fragment(), OnArticleClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
@@ -71,6 +75,7 @@ class SearchFragment : Fragment(), OnArticleClickListener {
 
         viewModel.articles.observe(viewLifecycleOwner, Observer {
             it?.let {
+                Log.d(TAG, "onViewCreated: ${it.size}")
                 adapter.submitList(it)
             }
         })
@@ -86,6 +91,12 @@ class SearchFragment : Fragment(), OnArticleClickListener {
                 }
                 currentPopupView = null
                 viewModel.setSelectedArticle(null)
+            }
+        })
+
+        viewModel.status.observe(viewLifecycleOwner, Observer {
+            it?.let {
+
             }
         })
 

@@ -7,6 +7,8 @@ import com.kefasjwiryadi.bacaberita.domain.ArticleSearchResult
 import com.kefasjwiryadi.bacaberita.network.NewsApiService
 import com.kefasjwiryadi.bacaberita.repository.AppRepository
 import com.kefasjwiryadi.bacaberita.util.AbsentLiveData
+import com.kefasjwiryadi.bacaberita.util.Status
+import com.kefasjwiryadi.bacaberita.util.isNotLoading
 import kotlinx.coroutines.launch
 
 class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
@@ -15,13 +17,9 @@ class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
     val articles: LiveData<ArrayList<Article>>
         get() = _articles
 
-    private val _isLoading = MutableLiveData<Boolean>(false)
-    val isLoading: LiveData<Boolean>
-        get() = _isLoading
-
-    private val _isLoadingMore = MutableLiveData<Boolean>(false)
-    val isLoadingMore: LiveData<Boolean>
-        get() = _isLoadingMore
+    private val _status = MutableLiveData<Int>(Status.IDLE)
+    val status: LiveData<Int>
+        get() = _status
 
     private lateinit var query: String
 
@@ -65,19 +63,20 @@ class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
 
     private fun loadNextPage(query: String, page: Int) {
         viewModelScope.launch {
-            if (_isLoadingMore.value == false) {
-                _isLoadingMore.value = true
+            if (_status.value!!.isNotLoading()) {
+                _status.value = Status.LOADING_MORE
                 try {
                     currentSearchResult = appRepository.searchArticles(query, page)
                     val articlesTemp = currentSearchResult!!.articles
-                    if (articlesTemp.isNotEmpty()) {
-                        _articles.value = ArrayList(_articles.value)
+                    if (!articlesTemp.isNullOrEmpty()) {
+                        _articles.value = ArrayList(_articles.value!!)
                         _articles.value?.addAll(articlesTemp)
                     }
+                    _status.value = Status.SUCCESS
                 } catch (e: Exception) {
+                    _status.value = Status.FAILURE
                     Log.d(TAG, "onReachEnd: $e")
                 }
-                _isLoadingMore.value = false
             }
         }
     }
@@ -86,15 +85,21 @@ class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
         this.query = query
         viewModelScope.launch {
             try {
-                _isLoading.value = true
+                _status.value = Status.LOADING
                 Log.d(TAG, "searchArticles: Searching query: $query")
+                _articles.value = ArrayList()
                 currentSearchResult = appRepository.searchArticles(query, 1)
                 _articles.value = ArrayList(currentSearchResult!!.articles)
-                Log.d(TAG, "searchArticles: Search finished: $query ${(_articles.value)?.get(0)}")
+                Log.d(TAG, "searchArticles: Search finished: $query")
+                if (_articles.value.isNullOrEmpty()) {
+                    _status.value = Status.NO_RESULT
+                } else {
+                    _status.value = Status.SUCCESS
+                }
             } catch (e: Exception) {
+                _status.value = Status.FAILURE
                 Log.d(TAG, "searchArticles: $e")
             }
-            _isLoading.value = false
         }
     }
 
