@@ -15,9 +15,9 @@ import com.kefasjwiryadi.bacaberita.databinding.ArticleDetailFragmentBinding
 import com.kefasjwiryadi.bacaberita.di.Injection
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.util.openWebsiteUrl
-import com.kefasjwiryadi.bacaberita.util.setTextHtml
 import com.kefasjwiryadi.bacaberita.util.share
 import com.kefasjwiryadi.bacaberita.util.toDateFormat
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 
 class ArticleDetailFragment : Fragment() {
 
@@ -63,7 +63,14 @@ class ArticleDetailFragment : Fragment() {
                 // Set content
                 when {
                     article.fullContent != null -> {
-                        binding.articleDetailContent.setTextHtml(article.fullContent!!)
+                        binding.articleDetailContent.setOnClickUrlListener { _, url ->
+                            openWebsiteUrl(requireContext(), url)
+                            return@setOnClickUrlListener true
+                        }
+                        binding.articleDetailContent.setHtml(
+                            article.fullContent!! + "<p>_</p>",
+                            HtmlHttpImageGetter(binding.articleDetailContent)
+                        )
                     }
                     article.content != null -> {
                         binding.articleDetailContent.text = article.content

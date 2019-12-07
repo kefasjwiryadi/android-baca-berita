@@ -113,13 +113,13 @@
                     android:id="@+id/article_detail_published_at"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/article_detail_source"
                     tools:text="21/11/2019 03:38 WIB" />
 
-                <TextView
+                <org.sufficientlysecure.htmltextview.HtmlTextView
                     android:id="@+id/article_detail_content"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
