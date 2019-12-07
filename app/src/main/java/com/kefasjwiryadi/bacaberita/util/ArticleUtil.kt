@@ -9,6 +9,7 @@ import androidx.core.app.ShareCompat
 import com.kefasjwiryadi.bacaberita.R
 import com.kefasjwiryadi.bacaberita.domain.Article
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
 import org.ocpsoft.prettytime.PrettyTime
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,10 +34,13 @@ fun String.cleanContent(): String {
 
 fun String.cleanTitle(): String {
     val cleanedTitle = clean("-")
-    if ((cleanedTitle.contains(".co") || cleanedTitle.contains("VIVA")) && cleanedTitle.contains("-")) {
-        return cleanedTitle.clean("-")
+    return if ((cleanedTitle.contains(".co") || cleanedTitle.contains("VIVA")) && cleanedTitle.contains(
+            "-"
+        )
+    ) {
+        cleanedTitle.clean("-").trim()
     } else {
-        return cleanedTitle
+        cleanedTitle.trim()
     }
 }
 
@@ -100,7 +104,33 @@ fun String.getContent(partialContent: String): String {
     if (paragraphs == null) {
         paragraphs = doc.select("div:contains(${partialContent.substring(30, 60)})").last()
     }
-    return paragraphs.toString()
+
+    paragraphs.select("div, style, table, script").remove()
+    var lastTag: String? = null
+//    paragraphs.children().forEach {
+//        val currentTag = it.tagName()
+//        if (currentTag == "br" && lastTag == "br") {
+//            it.remove()
+//        }
+//        lastTag = currentTag
+//    }
+
+    val sb = StringBuilder()
+
+    if (paragraphs.ownText().trim().isEmpty()) {
+        paragraphs.children().forEach {
+            if (it.shouldShow()) {
+                sb.append(it.toString() + "\n")
+            }
+        }
+        return "$sb"
+    } else {
+        return paragraphs.toString()
+    }
+}
+
+private fun Element.shouldShow(): Boolean {
+    return (text().isNotEmpty() && !text().contains('{')) || tagName() == "img"
 }
 
 fun Article.showPopupMenu(

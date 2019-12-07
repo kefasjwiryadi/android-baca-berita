@@ -68,7 +68,7 @@ class ArticleDetailFragment : Fragment() {
                             return@setOnClickUrlListener true
                         }
                         binding.articleDetailContent.setHtml(
-                            article.fullContent!! + "<p>_</p>",
+                            article.fullContent!!,
                             HtmlHttpImageGetter(binding.articleDetailContent)
                         )
                     }
