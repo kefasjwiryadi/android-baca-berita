@@ -51,7 +51,7 @@ class ArticleTest {
 
     @Test
     fun testGetContent1() {
-        val html = getStringFromFile("html1.html")
+        val html = getStringFromFile("html1.txt")
         val partialContent =
             "JAKARTA, KOMPAS.com - Penyanyi campursari Didi Kempot menggelar konser di The Pallas, SCBD, Jakarta Selatan, Jumat (6/12/2019) yang bertajuk \" The Lord of Loro Ati\".\r\nMeski The Pallas dikenal sebagai tempat hiburan anak muda dengan desain yang mewah dan masa …"
         val expected =
@@ -80,7 +80,7 @@ class ArticleTest {
 
     @Test
     fun testGetContent2() {
-        val html = getStringFromFile("html2.html")
+        val html = getStringFromFile("html2.txt")
         val partialContent =
             "Jakarta -\r\n Setelah sebulan lebih jabatan strategis di tubuh Polri kosong, seorang jenderal bintang dua terpilih mengisinya. Bukan sembarang orang, dia merupakan mantan ajudan Presiden Joko Widodo (Jokowi).Dialah Inspektur Jenderal (Irjen) Listyo Sigit Prabow…"
         val expected = "<div class=\"detail_text\"> \n" +
@@ -119,7 +119,7 @@ class ArticleTest {
 
     @Test
     fun testGetContent3() {
-        val html = getStringFromFile("html3.html")
+        val html = getStringFromFile("html3.txt")
         val partialContent =
             "VIVA  Ajang penghargaan bergengsi Panasonic Gobel Awards, baru saja digelar meriah pada Jumat malam, 6 Desember 2019 di The Tribrata Dharmawangsa, Jakarta Selatan. Sebanyak 24 kategori telah dibacakan pemenangnya.\\r\\nBeda dari tahun sebelumnya, ada kategori Kre… [+2001 chars]"
         val expected =
