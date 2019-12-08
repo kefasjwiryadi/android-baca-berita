@@ -31,7 +31,7 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
 
     private lateinit var binding: ArticleFragmentBinding
 
-    private var resetList = false
+    private var resetList = 0L
 
     private val viewModel: ArticleViewModel by viewModels {
         Injection.provideArticleViewModelFactory(context!!, category!!)
@@ -80,8 +80,18 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
             override fun onChanged() {
                 super.onChanged()
                 Log.d(TAG, "AdapterDataObserver onChanged $category: ")
-                if (resetList) {
-                    resetList = false
+                scrollToTop()
+            }
+
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                Log.d(TAG, "AdapterDataObserver onItemRangeInserted $category: $positionStart")
+                scrollToTop()
+            }
+
+            private fun scrollToTop() {
+                if (resetList != 0L && System.currentTimeMillis() - resetList < 1000) {
+                    resetList = 0L
                     binding.articleList.scrollToPosition(0)
                 }
             }
@@ -137,7 +147,7 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
 
         viewModel.eventResetList.observe(viewLifecycleOwner, Observer {
             if (it) {
-                resetList = true
+                resetList = System.currentTimeMillis()
                 viewModel.doneResetList()
             }
         })
