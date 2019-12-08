@@ -31,6 +31,8 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
 
     private lateinit var binding: ArticleFragmentBinding
 
+    private var resetList = false
+
     private val viewModel: ArticleViewModel by viewModels {
         Injection.provideArticleViewModelFactory(context!!, category!!)
     }
@@ -74,6 +76,17 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
 
         binding.articleList.adapter = adapter
 
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onChanged() {
+                super.onChanged()
+                Log.d(TAG, "AdapterDataObserver onChanged $category: ")
+                if (resetList) {
+                    resetList = false
+                    binding.articleList.scrollToPosition(0)
+                }
+            }
+        })
+
         binding.articleList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
@@ -86,7 +99,7 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
 
         viewModel.articles.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                Log.d(TAG, "onViewCreated: ${it[0].title}")
+                Log.d(TAG, "submitList $category: ${it.size}")
                 adapter.submitList(it)
                 adapter.notifyDataSetChanged()
             }
@@ -119,6 +132,13 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
                             .show()
                     }
                 }
+            }
+        })
+
+        viewModel.eventResetList.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                resetList = true
+                viewModel.doneResetList()
             }
         })
 

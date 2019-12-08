@@ -26,6 +26,10 @@ class ArticleViewModel(
     val status: LiveData<Int>
         get() = _status
 
+    private val _eventResetList = MutableLiveData<Boolean>()
+    val eventResetList: LiveData<Boolean>
+        get() = _eventResetList
+
     private var loadMoreAllowed = false
 
     init {
@@ -96,6 +100,7 @@ class ArticleViewModel(
                     appRepository.refreshArticles(category)
                     loadMoreAllowed = true
                     _status.value = Status.SUCCESS
+                    _eventResetList.value = true
                 } catch (e: Exception) {
                     Log.d(TAG, "refreshArticles: $e")
                     _status.value = Status.FAILURE
@@ -103,6 +108,10 @@ class ArticleViewModel(
                 Log.d(TAG, "refreshArticles: Loading finish")
             }
         }
+    }
+
+    fun doneResetList() {
+        _eventResetList.value = false
     }
 
     fun addFavoriteArticle(article: Article) {
