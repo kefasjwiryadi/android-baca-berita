@@ -27,6 +27,8 @@ class SearchFragment : Fragment(), OnArticleClickListener {
         Injection.provideSearchViewModelFactory(requireContext())
     }
 
+    private var lastQuery = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,6 +51,7 @@ class SearchFragment : Fragment(), OnArticleClickListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
                     viewModel.searchArticles(query)
+                    lastQuery = query
                 }
                 return false
             }
@@ -99,6 +102,10 @@ class SearchFragment : Fragment(), OnArticleClickListener {
 
             }
         })
+
+        binding.searchRetryButton.setOnClickListener {
+            viewModel.searchArticles(lastQuery)
+        }
 
     }
 
