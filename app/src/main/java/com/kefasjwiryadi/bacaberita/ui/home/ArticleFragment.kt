@@ -91,7 +91,6 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
 
             private fun scrollToTop() {
                 if (resetList != 0L && System.currentTimeMillis() - resetList < 1000) {
-                    resetList = 0L
                     binding.articleList.scrollToPosition(0)
                 }
             }
