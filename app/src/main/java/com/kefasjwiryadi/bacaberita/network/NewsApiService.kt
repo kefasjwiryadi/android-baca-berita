@@ -1,6 +1,7 @@
 package com.kefasjwiryadi.bacaberita.network
 
 import com.kefasjwiryadi.bacaberita.BuildConfig
+import com.kefasjwiryadi.bacaberita.db.TypeConverter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -13,7 +14,7 @@ interface NewsApiService {
     @GET(TOP_HEADLINES)
     suspend fun getArticles(
         @Query(CATEGORY_KEY) category: String = CATEGORY_DEF_VALUE,
-        @Query(API_KEY_KEY) apiKey: String = API_KEY_DEF_VALUE,
+        @Query(API_KEY_KEY) apiKey: String = getApiKey(),
         @Query(COUNTRY_KEY) country: String = COUNTRY_DEF_VALUE,
         @Query(PAGE_SIZE_KEY) pageSize: Int = PAGE_SIZE_DEF_VALUE,
         @Query(PAGE_KEY) page: Int = PAGE_DEF_VALUE
@@ -22,7 +23,7 @@ interface NewsApiService {
     @GET(EVERYTHING)
     suspend fun searchArticles(
         @Query(QUERY_KEY) query: String = QUERY_DEF_VALUE,
-        @Query(API_KEY_KEY) apiKey: String = API_KEY_DEF_VALUE,
+        @Query(API_KEY_KEY) apiKey: String = getApiKey(),
         @Query(LANGUAGE_KEY) language: String = LANGUAGE_DEF_VALUE,
         @Query(PAGE_SIZE_KEY) pageSize: Int = PAGE_SIZE_DEF_VALUE,
         @Query(PAGE_KEY) page: Int = PAGE_DEF_VALUE
@@ -55,7 +56,6 @@ interface NewsApiService {
         private const val LANGUAGE_DEF_VALUE = "id"
 
         private const val API_KEY_KEY = "apiKey"
-        private const val API_KEY_DEF_VALUE = BuildConfig.NEWS_API_KEY
 
         private const val CATEGORY_KEY = "category"
         private const val CATEGORY_DEF_VALUE = CATEGORY_GENERAL
@@ -65,6 +65,12 @@ interface NewsApiService {
 
         private const val PAGE_KEY = "page"
         private const val PAGE_DEF_VALUE = 1
+
+        private val apiKeys = TypeConverter.stringToStringList(BuildConfig.NEWS_API_KEY)
+
+        private fun getApiKey(): String {
+            return apiKeys.random()
+        }
 
         @Volatile
         private var INSTANCE: NewsApiService? = null
