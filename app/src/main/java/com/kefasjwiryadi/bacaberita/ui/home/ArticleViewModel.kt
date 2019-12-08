@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 private const val TAG = "ArticleViewModel"
 
 const val MINUTE_TO_MILLIS = 60L * 1000L
-const val REFRESH_RATE = 10L * MINUTE_TO_MILLIS
+const val REFRESH_RATE = 30L * MINUTE_TO_MILLIS
 
 class ArticleViewModel(
     private val appRepository: AppRepository,
