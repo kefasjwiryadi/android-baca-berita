@@ -1,5 +1,6 @@
 package com.kefasjwiryadi.bacaberita.ui.favorite
 
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -22,6 +23,10 @@ class FavoriteViewModel(private val appRepository: AppRepository) : ViewModel() 
     }
 
     val favoriteArticles = appRepository.getFavoriteArticles()
+
+    val isEmptyFavorite = Transformations.map(favoriteArticles) {
+        return@map it.isNullOrEmpty()
+    }
 }
 
 class FavoriteViewModelFactory(private val appRepository: AppRepository) :

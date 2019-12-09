@@ -16,9 +16,9 @@ import com.kefasjwiryadi.bacaberita.R
 import com.kefasjwiryadi.bacaberita.databinding.ArticleFragmentBinding
 import com.kefasjwiryadi.bacaberita.di.Injection
 import com.kefasjwiryadi.bacaberita.domain.Article
+import com.kefasjwiryadi.bacaberita.network.Status
 import com.kefasjwiryadi.bacaberita.ui.common.ArticleAdapter
 import com.kefasjwiryadi.bacaberita.ui.common.OnArticleClickListener
-import com.kefasjwiryadi.bacaberita.util.Status
 import com.kefasjwiryadi.bacaberita.util.showPopupMenu
 
 private const val TAG = "ArticleFragment"
@@ -131,7 +131,7 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
 
                 if (it == Status.FAILURE) {
                     if (viewModel.articles.value.isNullOrEmpty()) {
-                        // TODO: Display error screen
+                        binding.articleNoInternetLayout.visibility = View.VISIBLE
                     } else {
                         Toast.makeText(
                             requireContext(),
@@ -140,6 +140,8 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
                         )
                             .show()
                     }
+                } else {
+                    binding.articleNoInternetLayout.visibility = View.GONE
                 }
             }
         })
@@ -150,6 +152,10 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
                 viewModel.doneResetList()
             }
         })
+
+        binding.articleRetryButton.setOnClickListener {
+            viewModel.refreshArticles()
+        }
 
     }
 

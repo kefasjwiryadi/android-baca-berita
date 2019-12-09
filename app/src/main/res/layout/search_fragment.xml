@@ -7,7 +7,7 @@
 
         <import type="android.view.View" />
 
-        <import type="com.kefasjwiryadi.bacaberita.util.Status" />
+        <import type="com.kefasjwiryadi.bacaberita.network.Status" />
 
         <variable
             name="viewModel"
@@ -85,6 +85,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <LinearLayout
+            android:layout_margin="40dp"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="vertical"
@@ -122,6 +123,7 @@
 
         <LinearLayout
             android:id="@+id/search_no_result_layout"
+            android:layout_margin="40dp"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="vertical"

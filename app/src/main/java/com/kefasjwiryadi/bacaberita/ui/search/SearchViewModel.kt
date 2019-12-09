@@ -5,10 +5,10 @@ import androidx.lifecycle.*
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.domain.ArticleSearchResult
 import com.kefasjwiryadi.bacaberita.network.NewsApiService
+import com.kefasjwiryadi.bacaberita.network.Status
+import com.kefasjwiryadi.bacaberita.network.isNotLoading
 import com.kefasjwiryadi.bacaberita.repository.AppRepository
 import com.kefasjwiryadi.bacaberita.util.AbsentLiveData
-import com.kefasjwiryadi.bacaberita.util.Status
-import com.kefasjwiryadi.bacaberita.util.isNotLoading
 import kotlinx.coroutines.launch
 
 class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {

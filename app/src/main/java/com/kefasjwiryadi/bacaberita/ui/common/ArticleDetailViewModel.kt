@@ -3,8 +3,8 @@ package com.kefasjwiryadi.bacaberita.ui.common
 import android.util.Log
 import androidx.lifecycle.*
 import com.kefasjwiryadi.bacaberita.domain.Article
+import com.kefasjwiryadi.bacaberita.network.Status
 import com.kefasjwiryadi.bacaberita.repository.AppRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ArticleDetailViewModel(
@@ -18,17 +18,30 @@ class ArticleDetailViewModel(
     val eventToast: LiveData<String>
         get() = _eventToast
 
+    private val _status = MutableLiveData<Int>(Status.IDLE)
+    val status: MutableLiveData<Int>
+        get() = _status
+
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             if (appRepository.getArticle(article.url) == null) {
                 appRepository.insertArticle(article)
             }
             if (!article.content.isNullOrEmpty() && article.fullContent.isNullOrEmpty()) {
-                try {
-                    appRepository.getFullContent(article)
-                } catch (e: Exception) {
-                    Log.d(TAG, "$e")
-                }
+                getFullContent()
+            }
+        }
+    }
+
+    fun getFullContent() {
+        viewModelScope.launch {
+            _status.value = Status.LOADING
+            try {
+                appRepository.getFullContent(article)
+                _status.value = Status.SUCCESS
+            } catch (e: Exception) {
+                Log.d(TAG, "$e")
+                _status.value = Status.FAILURE
             }
         }
     }

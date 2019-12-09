@@ -1,4 +1,4 @@
-package com.kefasjwiryadi.bacaberita.util
+package com.kefasjwiryadi.bacaberita.network
 
 class Status {
 

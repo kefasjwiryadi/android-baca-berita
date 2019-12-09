@@ -48,6 +48,9 @@ class ArticleDetailFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+
         viewModel.articleLd.observe(viewLifecycleOwner, Observer { article ->
             if (article != null) {
                 Glide.with(context!!).load(article.urlToImage)

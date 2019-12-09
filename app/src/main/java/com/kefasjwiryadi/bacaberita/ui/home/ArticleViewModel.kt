@@ -4,9 +4,9 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.network.NewsApiService.Companion.PAGE_SIZE_DEF_VALUE
+import com.kefasjwiryadi.bacaberita.network.Status
+import com.kefasjwiryadi.bacaberita.network.isNotLoading
 import com.kefasjwiryadi.bacaberita.repository.AppRepository
-import com.kefasjwiryadi.bacaberita.util.Status
-import com.kefasjwiryadi.bacaberita.util.isNotLoading
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

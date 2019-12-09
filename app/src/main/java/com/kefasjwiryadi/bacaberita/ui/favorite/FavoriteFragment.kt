@@ -44,6 +44,9 @@ class FavoriteFragment : Fragment(), OnArticleClickListener {
 
         Log.d(TAG, "onViewCreated: favorite")
 
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+
         binding.favoriteToolbar.apply {
             setupWithNavController(findNavController())
             title = "Favorit"

@@ -6,6 +6,14 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <import type="com.kefasjwiryadi.bacaberita.network.Status" />
+
+        <variable
+            name="viewModel"
+            type="com.kefasjwiryadi.bacaberita.ui.common.ArticleDetailViewModel" />
+
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -55,6 +63,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
+                android:paddingBottom="16dp"
                 android:layout_height="match_parent">
 
                 <TextView
@@ -133,7 +142,30 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/article_detail_published_at"
+                    tools:maxLines="4"
                     tools:text="@tools:sample/lorem/random" />
+
+                <ProgressBar
+                    android:layout_marginTop="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{viewModel.status == Status.LOADING ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/article_detail_content" />
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Muat Ulang"
+                    android:visibility="@{viewModel.status == Status.FAILURE ? View.VISIBLE : View.GONE}"
+                    android:onClick="@{() -> viewModel.getFullContent()}"
+                    android:textColor="@color/colorAccent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/article_detail_content" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
