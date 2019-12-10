@@ -88,13 +88,7 @@ class ArticleDetailFragment : Fragment() {
                     openWebsiteUrl(context!!, article.url)
                 }
 
-                menu?.getItem(1)?.setIcon(
-                    if (article.favorite > 0) {
-                        R.drawable.ic_save_detail_fill
-                    } else {
-                        R.drawable.ic_save_detail_outline
-                    }
-                )
+                setSaveMenuIcon(article.favorite > 0)
             }
         })
 
@@ -114,10 +108,23 @@ class ArticleDetailFragment : Fragment() {
 
     }
 
+    private fun setSaveMenuIcon(isSaved: Boolean) {
+        menu?.findItem(R.id.save_action)?.setIcon(
+            if (isSaved) {
+                R.drawable.ic_save_detail_fill
+            } else {
+                R.drawable.ic_save_detail_outline
+            }
+        )
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
         inflater.inflate(R.menu.article_detail_menu, menu)
+        if (viewModel.articleLd.value != null) {
+            setSaveMenuIcon(viewModel.articleLd.value!!.favorite > 0)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
