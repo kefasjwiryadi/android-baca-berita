@@ -17,10 +17,9 @@ import kotlinx.coroutines.withContext
 private const val TAG = "AppRepository"
 
 class AppRepository(
-    private val appDatabase: AppDatabase,
+    appDatabase: AppDatabase,
     private val newsApiService: NewsApiService
 ) {
-
 
     private val articleDao = appDatabase.articleDao()
 

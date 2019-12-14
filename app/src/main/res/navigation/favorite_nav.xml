@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/favorite_nav"
-    app:startDestination="@id/favorite_dest">
+    app:startDestination="@id/favorite_dest"
+    tools:ignore="UnusedNavigation">
 
     <fragment
         android:id="@+id/favorite_dest"

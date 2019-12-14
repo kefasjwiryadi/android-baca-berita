@@ -1,10 +1,8 @@
 package com.kefasjwiryadi.bacaberita.ui.common
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -13,9 +11,7 @@ import com.kefasjwiryadi.bacaberita.R
 import com.kefasjwiryadi.bacaberita.databinding.ArticleItemBinding
 import com.kefasjwiryadi.bacaberita.databinding.SmallArticleItemBinding
 import com.kefasjwiryadi.bacaberita.domain.Article
-import com.kefasjwiryadi.bacaberita.util.share
 import com.kefasjwiryadi.bacaberita.util.toPrettyTime
-
 
 class ArticleAdapter(
     private val onArticleClickListener: OnArticleClickListener,
@@ -50,7 +46,7 @@ class ArticleAdapter(
     }
 }
 
-abstract class AbstractArticleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+sealed class AbstractArticleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     abstract fun bind(article: Article)
 }
 
@@ -60,36 +56,23 @@ class ArticleViewHolder(
 ) : AbstractArticleViewHolder(binding.root) {
 
     override fun bind(article: Article) {
-        binding.articleItemTitle.text = article.title
-        binding.articleItemSource.text = article.source?.name
-        binding.articleItemPublishedAt.text = article.publishedAt?.toPrettyTime()
-        Glide.with(binding.root).load(article.urlToImage).placeholder(
-            binding.articleItemImage.context.resources.getDrawable(
-                R.drawable.image_placeholder
-            )
-        )
-            .into(binding.articleItemImage)
-        binding.articleItemMoreButton.setOnClickListener {
-            onArticleClickListener.onPopupMenuClick(it, article)
-        }
-        binding.root.setOnClickListener {
-            onArticleClickListener.onArticleClick(article)
-        }
-    }
-}
-
-private fun inflatePopupMenu(context: Context, view: View, menuLayout: Int, article: Article) {
-    val popupMenu = PopupMenu(context, view)
-    popupMenu.inflate(menuLayout)
-    popupMenu.setOnMenuItemClickListener {
-        when (it.itemId) {
-            R.id.share_action -> {
-                article.share(context)
+        binding.apply {
+            articleItemTitle.text = article.title
+            articleItemSource.text = article.source?.name
+            articleItemPublishedAt.text = article.publishedAt?.toPrettyTime()
+            Glide.with(root).load(article.urlToImage).placeholder(
+                articleItemImage.context.resources.getDrawable(
+                    R.drawable.image_placeholder
+                )
+            ).into(articleItemImage)
+            articleItemMoreButton.setOnClickListener {
+                onArticleClickListener.onPopupMenuClick(it, article)
+            }
+            root.setOnClickListener {
+                onArticleClickListener.onArticleClick(article)
             }
         }
-        return@setOnMenuItemClickListener true
     }
-    popupMenu.show()
 }
 
 class SmallArticleViewHolder(
@@ -98,22 +81,23 @@ class SmallArticleViewHolder(
 ) : AbstractArticleViewHolder(binding.root) {
 
     override fun bind(article: Article) {
-        binding.smallArticleItemTitle.text = article.title
-        binding.smallArticleItemSource.text = article.source?.name
-        binding.smallArticleItemPublishedAt.text = article.publishedAt?.toPrettyTime()
-        Glide.with(binding.root).load(article.urlToImage).placeholder(
-            binding.smallArticleItemImage.context.resources.getDrawable(
-                R.drawable.image_placeholder
-            )
-        )
-            .into(binding.smallArticleItemImage)
+        binding.apply {
+            smallArticleItemTitle.text = article.title
+            smallArticleItemSource.text = article.source?.name
+            smallArticleItemPublishedAt.text = article.publishedAt?.toPrettyTime()
+            Glide.with(root).load(article.urlToImage).placeholder(
+                smallArticleItemImage.context.resources.getDrawable(
+                    R.drawable.image_placeholder
+                )
+            ).into(smallArticleItemImage)
 
-        binding.smallArticleItemMoreButton.setOnClickListener {
-            onArticleClickListener.onPopupMenuClick(it, article)
-        }
+            smallArticleItemMoreButton.setOnClickListener {
+                onArticleClickListener.onPopupMenuClick(it, article)
+            }
 
-        binding.root.setOnClickListener {
-            onArticleClickListener.onArticleClick(article)
+            root.setOnClickListener {
+                onArticleClickListener.onArticleClick(article)
+            }
         }
     }
 
@@ -127,7 +111,6 @@ class ArticleDiffCallBack : DiffUtil.ItemCallback<Article>() {
     override fun areContentsTheSame(oldItem: Article, newItem: Article): Boolean {
         return oldItem.favorite == newItem.favorite
     }
-
 }
 
 interface OnArticleClickListener {

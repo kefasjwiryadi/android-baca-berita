@@ -17,8 +17,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: MainActivityBinding
 
-    private var lastBottomNavSelectedTime = 0
-
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
@@ -55,11 +53,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
-
-        binding.mainBottomNav.setOnNavigationItemReselectedListener {
-            Log.d(TAG, "setupBottomNavigation: reselected: $it")
-        }
-
     }
 
     private fun hideBottomNavigation() {

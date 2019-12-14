@@ -14,25 +14,25 @@ import com.kefasjwiryadi.bacaberita.R
 
 private const val CHROME_PACKAGE = "com.android.chrome"
 
-@BindingAdapter("websiteLink", "hideWhenEmpty", requireAll = false)
-fun websiteLink(
-    button: View,
-    url: String?,
-    hideWhenEmpty: Boolean = false
-) {
-    if (url.isNullOrEmpty()) {
-        if (hideWhenEmpty) {
-            button.isVisible = false
-        } else {
-            button.isClickable = false
-        }
-        return
-    }
-    button.isVisible = true
-    button.setOnClickListener {
-        openWebsiteUrl(it.context, url)
-    }
-}
+//@BindingAdapter("websiteLink", "hideWhenEmpty", requireAll = false)
+//fun websiteLink(
+//    button: View,
+//    url: String?,
+//    hideWhenEmpty: Boolean = false
+//) {
+//    if (url.isNullOrEmpty()) {
+//        if (hideWhenEmpty) {
+//            button.isVisible = false
+//        } else {
+//            button.isClickable = false
+//        }
+//        return
+//    }
+//    button.isVisible = true
+//    button.setOnClickListener {
+//        openWebsiteUrl(it.context, url)
+//    }
+//}
 
 fun openWebsiteUrl(context: Context, url: String) {
     if (url.isBlank()) {

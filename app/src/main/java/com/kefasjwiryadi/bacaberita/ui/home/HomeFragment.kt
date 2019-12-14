@@ -35,26 +35,25 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated: ")
 
-        (activity as AppCompatActivity).setSupportActionBar(binding.homeToolbar)
-        binding.homeToolbar.setupWithNavController(findNavController())
-        binding.homeToolbar.title = resources.getString(R.string.app_name)
+        setupToolbar()
 
+        setupViewPager()
+    }
+
+    private fun setupToolbar() {
+        (activity as AppCompatActivity).setSupportActionBar(binding.homeToolbar)
+        binding.homeToolbar.apply {
+            setupWithNavController(findNavController())
+            title = resources.getString(R.string.app_name)
+        }
+    }
+
+    private fun setupViewPager() {
         // Create adapter for viewpager
         binding.homeViewpager.adapter = HomePagerAdapter(childFragmentManager)
 
         // Set text for each tab
         binding.homeTablayout.setupWithViewPager(binding.homeViewpager)
-
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onStop: ")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onDestroy: ")
     }
 
 }

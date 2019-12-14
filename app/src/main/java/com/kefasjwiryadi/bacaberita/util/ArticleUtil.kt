@@ -107,25 +107,18 @@ fun String.getContent(partialContent: String): String {
 
     paragraphs.select("div, style, table, script").remove()
     var lastTag: String? = null
-//    paragraphs.children().forEach {
-//        val currentTag = it.tagName()
-//        if (currentTag == "br" && lastTag == "br") {
-//            it.remove()
-//        }
-//        lastTag = currentTag
-//    }
 
     val sb = StringBuilder()
 
-    if (paragraphs.ownText().trim().isEmpty()) {
+    return if (paragraphs.ownText().trim().isEmpty()) {
         paragraphs.children().forEach {
             if (it.shouldShow()) {
                 sb.append(it.toString() + "\n")
             }
         }
-        return "$sb"
+        "$sb"
     } else {
-        return paragraphs.toString()
+        paragraphs.toString()
     }
 }
 

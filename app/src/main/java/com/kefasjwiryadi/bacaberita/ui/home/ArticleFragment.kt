@@ -33,9 +33,11 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
 
     private var resetList = 0L
 
-    private val viewModel: ArticleViewModel by viewModels {
+    private val articleviewModel: ArticleViewModel by viewModels {
         Injection.provideArticleViewModelFactory(context!!, category!!)
     }
+
+    private lateinit var adapter: ArticleAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,23 +60,44 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume: $category")
-        viewModel.onFragmentResume()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onDestroy: $category")
+        articleviewModel.onFragmentResume()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+        setupAdapter()
 
-        val adapter = ArticleAdapter(this, R.menu.article_item_menu)
+        subscribeUi()
 
-        binding.articleList.adapter = adapter
+        binding.apply {
+            viewModel = articleviewModel
+            binding.lifecycleOwner = viewLifecycleOwner
+
+            articleList.adapter = adapter
+
+            articleList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val lastPosition = layoutManager.findLastVisibleItemPosition()
+                    if (lastPosition == adapter.itemCount - 1 && adapter.itemCount > 0) {
+                        articleviewModel.onReachEnd()
+                    }
+                }
+            })
+
+            articleRefresh.setOnRefreshListener {
+                articleviewModel.refreshArticles()
+            }
+
+            articleRetryButton.setOnClickListener {
+                articleviewModel.refreshArticles()
+            }
+        }
+    }
+
+    private fun setupAdapter() {
+        adapter = ArticleAdapter(this, R.menu.article_item_menu)
 
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
@@ -95,68 +118,55 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
                 }
             }
         })
+    }
 
-        binding.articleList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val lastPosition = layoutManager.findLastVisibleItemPosition()
-                if (lastPosition == adapter.itemCount - 1 && adapter.itemCount > 0) {
-                    viewModel.onReachEnd()
-                }
-            }
-        })
-
-        viewModel.articles.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                Log.d(TAG, "submitList $category: ${it.size}")
-                adapter.submitList(it)
-                adapter.notifyDataSetChanged()
-            }
-        })
-
-        binding.articleRefresh.setOnRefreshListener {
-            viewModel.refreshArticles()
-        }
-
-        viewModel.status.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                if (it == Status.LOADING) {
-                    if (!binding.articleRefresh.isRefreshing) {
-                        binding.articleLoadingProgressBar.visibility = View.VISIBLE
+    private fun subscribeUi() {
+        articleviewModel.apply {
+            articles.observe(viewLifecycleOwner, Observer {
+                if (it != null) {
+                    Log.d(TAG, "submitList $category: ${it.size}")
+                    adapter.apply {
+                        submitList(it)
+                        notifyDataSetChanged()
                     }
-                } else {
-                    binding.articleRefresh.isRefreshing = false
-                    binding.articleLoadingProgressBar.visibility = View.GONE
                 }
+            })
 
-                if (it == Status.FAILURE) {
-                    if (viewModel.articles.value.isNullOrEmpty()) {
-                        binding.articleNoInternetLayout.visibility = View.VISIBLE
+            status.observe(viewLifecycleOwner, Observer {
+                it?.let {
+                    if (it == Status.LOADING) {
+                        if (!binding.articleRefresh.isRefreshing) {
+                            binding.articleLoadingProgressBar.visibility = View.VISIBLE
+                        }
                     } else {
-                        Toast.makeText(
-                            requireContext(),
-                            "Gagal mendapatkan data",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
+                        binding.articleRefresh.isRefreshing = false
+                        binding.articleLoadingProgressBar.visibility = View.GONE
                     }
-                } else {
-                    binding.articleNoInternetLayout.visibility = View.GONE
+
+                    if (it == Status.FAILURE) {
+                        if (articleviewModel.articles.value.isNullOrEmpty()) {
+                            binding.articleNoInternetLayout.visibility = View.VISIBLE
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                "Gagal mendapatkan data",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                    } else {
+                        binding.articleNoInternetLayout.visibility = View.GONE
+                    }
                 }
-            }
-        })
+            })
 
-        viewModel.eventResetList.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                resetList = System.currentTimeMillis()
-                viewModel.doneResetList()
-            }
-        })
-
-        binding.articleRetryButton.setOnClickListener {
-            viewModel.refreshArticles()
+            eventResetList.observe(viewLifecycleOwner, Observer {
+                if (it) {
+                    resetList = System.currentTimeMillis()
+                    articleviewModel.doneResetList()
+                }
+            })
         }
-
     }
 
     companion object {
@@ -178,9 +188,9 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
 
     override fun onPopupMenuClick(view: View, article: Article) {
         article.showPopupMenu(view, {
-            viewModel.addFavoriteArticle(article)
+            articleviewModel.addFavoriteArticle(article)
         }, {
-            viewModel.removeFavoriteArticle(article)
+            articleviewModel.removeFavoriteArticle(article)
         })
     }
 }

@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -20,11 +21,13 @@ import com.kefasjwiryadi.bacaberita.util.showPopupMenu
 
 class FavoriteFragment : Fragment(), OnArticleClickListener {
 
-    val viewModel: FavoriteViewModel by viewModels {
+    private val favoriteViewModel: FavoriteViewModel by viewModels {
         Injection.provideFavoriteViewModelFactory(requireContext())
     }
 
     private lateinit var binding: FavoriteFragmentBinding
+
+    private lateinit var adapter: ArticleAdapter
 
     private var itemInsertedOnce = false
 
@@ -44,16 +47,30 @@ class FavoriteFragment : Fragment(), OnArticleClickListener {
 
         Log.d(TAG, "onViewCreated: favorite")
 
-        binding.lifecycleOwner = this
-        binding.viewModel = viewModel
+        setupToolbar()
 
+        setupAdapter()
+
+        binding.apply {
+            lifecycleOwner = viewLifecycleOwner
+            viewModel = favoriteViewModel
+
+            favoriteArticleList.adapter = adapter
+        }
+
+        subscribeUi()
+    }
+
+    private fun setupToolbar() {
         binding.favoriteToolbar.apply {
+            (activity as AppCompatActivity).setSupportActionBar(this)
             setupWithNavController(findNavController())
             title = "Favorit"
         }
+    }
 
-        val adapter = ArticleAdapter(this, ArticleAdapter.SMALL_LAYOUT)
-        binding.favoriteArticleList.adapter = adapter
+    private fun setupAdapter() {
+        adapter = ArticleAdapter(this, ArticleAdapter.SMALL_LAYOUT)
 
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
@@ -66,14 +83,11 @@ class FavoriteFragment : Fragment(), OnArticleClickListener {
                     itemInsertedOnce = true
                 }
             }
-
-            override fun onChanged() {
-                super.onChanged()
-                Log.d(TAG, "favorite onChanged: ")
-            }
         })
+    }
 
-        viewModel.favoriteArticles.observe(viewLifecycleOwner, Observer {
+    private fun subscribeUi() {
+        favoriteViewModel.favoriteArticles.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 adapter.submitList(it)
             }
@@ -88,9 +102,9 @@ class FavoriteFragment : Fragment(), OnArticleClickListener {
 
     override fun onPopupMenuClick(view: View, article: Article) {
         article.showPopupMenu(view, {
-            viewModel.addFavoriteArticle(it)
+            favoriteViewModel.addFavoriteArticle(it)
         }, {
-            viewModel.removeFavoriteArticle(it)
+            favoriteViewModel.removeFavoriteArticle(it)
         })
     }
 

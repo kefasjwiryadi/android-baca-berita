@@ -75,6 +75,7 @@ class ArticleDetailViewModelFactory(
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        @Suppress("UNCHECKED_CAST")
         return ArticleDetailViewModel(appRepository, article) as T
     }
 }

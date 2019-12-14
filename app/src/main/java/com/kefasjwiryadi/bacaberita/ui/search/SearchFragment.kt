@@ -23,7 +23,9 @@ class SearchFragment : Fragment(), OnArticleClickListener {
 
     private lateinit var binding: SearchFragmentBinding
 
-    private val viewModel: SearchViewModel by viewModels {
+    private lateinit var adapter: ArticleAdapter
+
+    private val searchViewModel: SearchViewModel by viewModels {
         Injection.provideSearchViewModelFactory(requireContext())
     }
 
@@ -44,69 +46,75 @@ class SearchFragment : Fragment(), OnArticleClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+        adapter = ArticleAdapter(this, ArticleAdapter.SMALL_LAYOUT)
 
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    viewModel.searchArticles(query)
-                    lastQuery = query
+        binding.apply {
+            viewModel = searchViewModel
+            lifecycleOwner = viewLifecycleOwner
+
+            searchArticleList.adapter = adapter
+
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    query?.let {
+                        searchViewModel.searchArticles(query)
+                        lastQuery = query
+                    }
+                    return false
                 }
-                return false
-            }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                return false
-            }
-
-        })
-
-        val adapter = ArticleAdapter(this, ArticleAdapter.SMALL_LAYOUT)
-
-        binding.searchArticleList.adapter = adapter
-
-        binding.searchArticleList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val lastPosition = layoutManager.findLastVisibleItemPosition()
-                if (lastPosition == adapter.itemCount - 1 && adapter.itemCount > 0) {
-                    viewModel.onReachEnd()
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    return false
                 }
-            }
-        })
+            })
 
-        viewModel.articles.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                Log.d(TAG, "onViewCreated: ${it.size}")
-                adapter.submitList(it)
-            }
-        })
-
-        viewModel.eventShowPopupMenu.observe(viewLifecycleOwner, Observer { article ->
-            if (article != null) {
-                currentPopupView?.let {
-                    article.showPopupMenu(it, {
-                        viewModel.addFavoriteArticle(article)
-                    }, {
-                        viewModel.removeFavoriteArticle(article)
-                    })
+            searchArticleList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val lastPosition = layoutManager.findLastVisibleItemPosition()
+                    if (lastPosition == adapter.itemCount - 1 && adapter.itemCount > 0) {
+                        searchViewModel.onReachEnd()
+                    }
                 }
-                currentPopupView = null
-                viewModel.setSelectedArticle(null)
+            })
+
+            searchRetryButton.setOnClickListener {
+                searchViewModel.searchArticles(lastQuery)
             }
-        })
-
-        viewModel.status.observe(viewLifecycleOwner, Observer {
-            it?.let {
-
-            }
-        })
-
-        binding.searchRetryButton.setOnClickListener {
-            viewModel.searchArticles(lastQuery)
         }
 
+        subscribeUi()
+    }
+
+    private fun subscribeUi() {
+        searchViewModel.apply {
+            articles.observe(viewLifecycleOwner, Observer {
+                it?.let {
+                    Log.d(TAG, "onViewCreated: ${it.size}")
+                    adapter.submitList(it)
+                }
+            })
+
+            eventShowPopupMenu.observe(viewLifecycleOwner, Observer { article ->
+                if (article != null) {
+                    currentPopupView?.let {
+                        article.showPopupMenu(it, {
+                            searchViewModel.addFavoriteArticle(article)
+                        }, {
+                            searchViewModel.removeFavoriteArticle(article)
+                        })
+                    }
+                    currentPopupView = null
+                    searchViewModel.setSelectedArticle(null)
+                }
+            })
+
+            status.observe(viewLifecycleOwner, Observer {
+                it?.let {
+
+                }
+            })
+        }
     }
 
     override fun onArticleClick(article: Article) {
@@ -119,7 +127,7 @@ class SearchFragment : Fragment(), OnArticleClickListener {
 
     override fun onPopupMenuClick(view: View, article: Article) {
         currentPopupView = view
-        viewModel.setSelectedArticle(article)
+        searchViewModel.setSelectedArticle(article)
     }
 
     companion object {

@@ -32,15 +32,6 @@ class ArticleViewModel(
 
     private var loadMoreAllowed = false
 
-    init {
-        Log.d(TAG, "init: $category")
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        Log.d(TAG, "onCleared: $category")
-    }
-
     fun onFragmentResume() {
         viewModelScope.launch(Dispatchers.IO) {
             if (shouldRefresh()) {
@@ -135,6 +126,7 @@ class ArticleViewModelFactory(
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        @Suppress("UNCHECKED_CAST")
         return ArticleViewModel(appRepository, category) as T
     }
 

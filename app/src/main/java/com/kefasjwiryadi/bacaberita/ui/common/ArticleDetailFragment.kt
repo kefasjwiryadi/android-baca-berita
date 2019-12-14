@@ -25,7 +25,7 @@ class ArticleDetailFragment : Fragment() {
 
     private lateinit var article: Article
 
-    private val viewModel: ArticleDetailViewModel by viewModels {
+    private val articleDetailViewModel: ArticleDetailViewModel by viewModels {
         Injection.provideArticleDetailViewModelFactory(requireContext(), article)
     }
 
@@ -46,66 +46,80 @@ class ArticleDetailFragment : Fragment() {
 
         article = ArticleDetailFragmentArgs.fromBundle(arguments!!).article
 
+        binding.apply {
+            viewModel = articleDetailViewModel
+            lifecycleOwner = viewLifecycleOwner
+        }
+
+        setupToolbar()
+
+        subscribeUi()
+    }
+
+    private fun setupToolbar() {
         setHasOptionsMenu(true)
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+        binding.articleDetailToolbar.apply {
+            (activity as AppCompatActivity).setSupportActionBar(this)
+            setupWithNavController(findNavController())
+            title = ""
+            navigationIcon = resources.getDrawable(R.drawable.ic_back_detail)
+        }
+    }
 
-        viewModel.articleLd.observe(viewLifecycleOwner, Observer { article ->
-            if (article != null) {
-                Glide.with(context!!).load(article.urlToImage)
-                    .placeholder(R.drawable.image_placeholder)
-                    .into(binding.articleDetailImage)
-                binding.articleDetailTitle.text = article.title
-                binding.articleDetailAuthor.text = article.author
-                binding.articleDetailPublishedAt.text =
-                    "Diterbitkan: ${article.publishedAt?.toDateFormat()}"
-                binding.articleDetailDescription.text = article.description
-                binding.articleDetailSource.text = article.source?.name
+    private fun subscribeUi() {
+        articleDetailViewModel.apply {
+            articleLd.observe(viewLifecycleOwner, Observer { article ->
+                if (article != null) {
+                    Glide.with(context!!).load(article.urlToImage)
+                        .placeholder(R.drawable.image_placeholder)
+                        .into(binding.articleDetailImage)
+                    binding.apply {
+                        articleDetailTitle.text = article.title
+                        articleDetailAuthor.text = article.author
+                        articleDetailPublishedAt.text =
+                            "Diterbitkan: ${article.publishedAt?.toDateFormat()}"
+                        articleDetailDescription.text = article.description
+                        articleDetailSource.text = article.source?.name
 
-                // Set content
-                when {
-                    article.fullContent != null -> {
-                        binding.articleDetailContent.setOnClickUrlListener { _, url ->
-                            openWebsiteUrl(requireContext(), url)
-                            return@setOnClickUrlListener true
+                        // Set content
+                        when {
+                            article.fullContent != null -> {
+                                articleDetailContent.setOnClickUrlListener { _, url ->
+                                    openWebsiteUrl(requireContext(), url)
+                                    return@setOnClickUrlListener true
+                                }
+                                articleDetailContent.setHtml(
+                                    article.fullContent!!,
+                                    HtmlHttpImageGetter(articleDetailContent)
+                                )
+                            }
+                            article.content != null -> {
+                                articleDetailContent.text = article.content
+                            }
+                            else -> {
+                                articleDetailContent.text =
+                                    "Konten untuk artikel ini tidak tersedia"
+                            }
                         }
-                        binding.articleDetailContent.setHtml(
-                            article.fullContent!!,
-                            HtmlHttpImageGetter(binding.articleDetailContent)
-                        )
+
+                        readMoreButton.setOnClickListener {
+                            openWebsiteUrl(context!!, article.url)
+                        }
+
+                        setSaveMenuIcon(article.favorite > 0)
                     }
-                    article.content != null -> {
-                        binding.articleDetailContent.text = article.content
-                    }
-                    else -> {
-                        binding.articleDetailContent.text =
-                            "Konten untuk artikel ini tidak tersedia"
-                    }
+
                 }
+            })
 
-                binding.readMoreButton.setOnClickListener {
-                    openWebsiteUrl(context!!, article.url)
+            eventToast.observe(viewLifecycleOwner, Observer {
+                if (!it.isNullOrEmpty()) {
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                    articleDetailViewModel.doneToast()
                 }
-
-                setSaveMenuIcon(article.favorite > 0)
-            }
-        })
-
-        viewModel.eventToast.observe(viewLifecycleOwner, Observer {
-            if (!it.isNullOrEmpty()) {
-                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                viewModel.doneToast()
-            }
-        })
-
-        (activity as AppCompatActivity).setSupportActionBar(binding.articleDetailToolbar)
-
-        binding.articleDetailToolbar.setupWithNavController(findNavController())
-        binding.articleDetailToolbar.title = ""
-        binding.articleDetailToolbar.navigationIcon =
-            resources.getDrawable(R.drawable.ic_back_detail)
-
+            })
+        }
     }
 
     private fun setSaveMenuIcon(isSaved: Boolean) {
@@ -122,15 +136,15 @@ class ArticleDetailFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
         inflater.inflate(R.menu.article_detail_menu, menu)
-        if (viewModel.articleLd.value != null) {
-            setSaveMenuIcon(viewModel.articleLd.value!!.favorite > 0)
+        if (articleDetailViewModel.articleLd.value != null) {
+            setSaveMenuIcon(articleDetailViewModel.articleLd.value!!.favorite > 0)
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.share_action -> article.share(context!!)
-            R.id.save_action -> viewModel.saveArticle()
+            R.id.save_action -> articleDetailViewModel.saveArticle()
         }
         return super.onOptionsItemSelected(item)
     }
