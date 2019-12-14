@@ -77,8 +77,10 @@ class ArticleDetailFragment : Fragment() {
                     binding.apply {
                         articleDetailTitle.text = article.title
                         articleDetailAuthor.text = article.author
-                        articleDetailPublishedAt.text =
-                            "Diterbitkan: ${article.publishedAt?.toDateFormat()}"
+                        articleDetailPublishedAt.text = getString(
+                            R.string.published_at,
+                            article.publishedAt?.toDateFormat()
+                        )
                         articleDetailDescription.text = article.description
                         articleDetailSource.text = article.source?.name
 
@@ -99,7 +101,7 @@ class ArticleDetailFragment : Fragment() {
                             }
                             else -> {
                                 articleDetailContent.text =
-                                    "Konten untuk artikel ini tidak tersedia"
+                                    getString(R.string.content_not_available)
                             }
                         }
 
@@ -114,8 +116,8 @@ class ArticleDetailFragment : Fragment() {
             })
 
             eventToast.observe(viewLifecycleOwner, Observer {
-                if (!it.isNullOrEmpty()) {
-                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                if (it != 0) {
+                    Toast.makeText(context, getString(it), Toast.LENGTH_SHORT).show()
                     articleDetailViewModel.doneToast()
                 }
             })

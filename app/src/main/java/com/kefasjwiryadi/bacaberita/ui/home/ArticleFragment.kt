@@ -149,7 +149,7 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
                         } else {
                             Toast.makeText(
                                 requireContext(),
-                                "Gagal mendapatkan data",
+                                getString(R.string.failed_to_fetch_data),
                                 Toast.LENGTH_SHORT
                             )
                                 .show()

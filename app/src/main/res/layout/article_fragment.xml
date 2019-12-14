@@ -62,12 +62,12 @@
 
         <LinearLayout
             android:id="@+id/article_no_internet_layout"
-            android:layout_margin="40dp"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_margin="40dp"
+            android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
-            android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -77,15 +77,15 @@
             <ImageView
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:tint="@color/grey"
                 android:layout_marginBottom="8dp"
+                android:tint="@color/grey"
                 app:srcCompat="@drawable/ic_wifi_off" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Anda sedang offline"
                 android:layout_marginBottom="8dp"
+                android:text="@string/you_are_offline"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 android:textColor="@android:color/black" />
 
@@ -94,7 +94,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Coba Lagi"
+                android:text="@string/retry"
                 android:textColor="@color/colorAccent" />
 
         </LinearLayout>

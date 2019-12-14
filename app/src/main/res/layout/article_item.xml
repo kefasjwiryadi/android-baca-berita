@@ -10,7 +10,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?selectableItemBackground">
+        android:background="?selectableItemBackground"
+        tools:background="@android:color/white">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/article_item_card_view"
@@ -78,11 +79,11 @@
             android:id="@+id/article_item_published_at"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             android:textColor="@color/grey"
             app:layout_constraintBottom_toBottomOf="@+id/article_item_more_button"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/article_item_title"
             tools:text="3 jam yang lalu" />
 

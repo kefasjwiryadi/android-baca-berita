@@ -1,5 +1,6 @@
 package com.kefasjwiryadi.bacaberita.util
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.view.View
@@ -64,6 +65,7 @@ fun List<Article>.clean() {
     }
 }
 
+@SuppressLint("SimpleDateFormat")
 fun String.toMillis(): Long {
     val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
     dateFormatter.timeZone = TimeZone.getTimeZone("UTC")
@@ -71,6 +73,7 @@ fun String.toMillis(): Long {
     return date.time
 }
 
+@SuppressLint("SimpleDateFormat")
 fun String.toDateFormat(): String {
     val millis = this.toMillis()
     val dateFormatter = SimpleDateFormat("dd/MM/yyyy HH:mm 'WIB'")
@@ -89,7 +92,7 @@ fun Article.share(context: Context) {
     description?.let {
         sb.append("\n\n$it")
     }
-    sb.append("\n\nBaca selengkapnya di $url")
+    sb.append("\n\n${context.getString(R.string.read_more_on, url)}")
 
     ShareCompat.IntentBuilder.from(context as Activity)
         .setType("text/plain")
@@ -106,7 +109,6 @@ fun String.getContent(partialContent: String): String {
     }
 
     paragraphs.select("div, style, table, script").remove()
-    var lastTag: String? = null
 
     val sb = StringBuilder()
 
@@ -149,12 +151,20 @@ fun Article.showPopupMenu(
             }
             R.id.save_action -> {
                 saveArticle(this)
-                Toast.makeText(view.context, "Artikel tersimpan ke favorit", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    view.context,
+                    view.context.getString(R.string.saved_to_favorite),
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
             R.id.remove_action -> {
                 removeArticle(this)
-                Toast.makeText(view.context, "Artikel dihapus dari favorit", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    view.context,
+                    view.context.getString(R.string.removed_from_favorite),
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
         }

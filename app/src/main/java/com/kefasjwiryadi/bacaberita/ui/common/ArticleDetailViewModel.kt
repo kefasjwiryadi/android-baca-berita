@@ -2,6 +2,7 @@ package com.kefasjwiryadi.bacaberita.ui.common
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.kefasjwiryadi.bacaberita.R
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.network.Status
 import com.kefasjwiryadi.bacaberita.repository.AppRepository
@@ -14,8 +15,8 @@ class ArticleDetailViewModel(
 
     val articleLd = appRepository.getArticleLd(article.url)
 
-    private val _eventToast = MutableLiveData<String>("")
-    val eventToast: LiveData<String>
+    private val _eventToast = MutableLiveData(0)
+    val eventToast: LiveData<Int>
         get() = _eventToast
 
     private val _status = MutableLiveData<Int>(Status.IDLE)
@@ -50,18 +51,18 @@ class ArticleDetailViewModel(
         if ((articleLd.value?.favorite ?: 0L) == 0L) {
             viewModelScope.launch {
                 appRepository.addFavoriteArticle(article)
-                _eventToast.value = "Disimpan ke favorit"
+                _eventToast.value = R.string.saved_to_favorite
             }
         } else {
             viewModelScope.launch {
                 appRepository.removeFavoriteArticle(article)
-                _eventToast.value = "Dihapus dari favorit"
+                _eventToast.value = R.string.removed_from_favorite
             }
         }
     }
 
     fun doneToast() {
-        _eventToast.value = ""
+        _eventToast.value = 0
     }
 
     companion object {

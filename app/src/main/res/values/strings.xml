@@ -1,6 +1,32 @@
 <resources>
     <string name="app_name">Baca Berita</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="content_not_available">Konten untuk artikel ini tidak tersedia</string>
+    <string name="published_at">Diterbitkan: %s</string>
+    <string name="saved_to_favorite">Disimpan ke favorit</string>
+    <string name="removed_from_favorite">Dihapus dari favorit</string>
+    <string name="failed_to_fetch_data">Gagal mendapatkan data</string>
+    <string name="read_more_on">Baca selengkapnya di %s</string>
+    <string name="favorite">Favorit</string>
+
+    <string name="business">bisnis</string>
+    <string name="entertainment">hiburan</string>
+    <string name="sports">olahraga</string>
+    <string name="technology">teknologi</string>
+    <string name="science">sains</string>
+    <string name="health">kesehatan</string>
+    <string name="general">umum</string>
+
+    <string name="you_are_offline">Anda sedang offline</string>
+    <string name="retry">Coba Lagi</string>
+    <string name="use_other_keywords">Coba kata kunci lain</string>
+    <string name="no_result_found">Tidak ada hasil yang ditemukan</string>
+    <string name="refresh">Muat Ulang</string>
+    <string name="empty_favorite">Artikel favorit kosong</string>
+    <string name="add_favorite_article">Tambahkan artikel dari beranda atau hasil pencarian</string>
+    <string name="share">Bagikan</string>
+    <string name="save">Simpan</string>
+    <string name="remove">Hapus</string>
+    <string name="home">Beranda</string>
+    <string name="search">Cari</string>
 </resources>

@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.kefasjwiryadi.bacaberita.R
 import com.kefasjwiryadi.bacaberita.databinding.FavoriteFragmentBinding
 import com.kefasjwiryadi.bacaberita.di.Injection
 import com.kefasjwiryadi.bacaberita.domain.Article
@@ -65,7 +66,7 @@ class FavoriteFragment : Fragment(), OnArticleClickListener {
         binding.favoriteToolbar.apply {
             (activity as AppCompatActivity).setSupportActionBar(this)
             setupWithNavController(findNavController())
-            title = "Favorit"
+            title = context.getString(R.string.favorite)
         }
     }
 
