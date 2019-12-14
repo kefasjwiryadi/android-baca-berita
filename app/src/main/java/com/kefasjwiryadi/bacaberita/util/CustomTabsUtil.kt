@@ -7,32 +7,31 @@ import android.view.View
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsService
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import com.kefasjwiryadi.bacaberita.R
 
 private const val CHROME_PACKAGE = "com.android.chrome"
 
-//@BindingAdapter("websiteLink", "hideWhenEmpty", requireAll = false)
-//fun websiteLink(
-//    button: View,
-//    url: String?,
-//    hideWhenEmpty: Boolean = false
-//) {
-//    if (url.isNullOrEmpty()) {
-//        if (hideWhenEmpty) {
-//            button.isVisible = false
-//        } else {
-//            button.isClickable = false
-//        }
-//        return
-//    }
-//    button.isVisible = true
-//    button.setOnClickListener {
-//        openWebsiteUrl(it.context, url)
-//    }
-//}
+@BindingAdapter("websiteLink", "hideWhenEmpty", requireAll = false)
+fun websiteLink(
+    button: View,
+    url: String?,
+    hideWhenEmpty: Boolean = false
+) {
+    if (url.isNullOrEmpty()) {
+        if (hideWhenEmpty) {
+            button.isVisible = false
+        } else {
+            button.isClickable = false
+        }
+        return
+    }
+    button.isVisible = true
+    button.setOnClickListener {
+        openWebsiteUrl(it.context, url)
+    }
+}
 
 fun openWebsiteUrl(context: Context, url: String) {
     if (url.isBlank()) {

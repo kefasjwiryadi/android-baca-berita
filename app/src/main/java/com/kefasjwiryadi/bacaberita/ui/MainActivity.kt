@@ -1,7 +1,6 @@
 package com.kefasjwiryadi.bacaberita.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -35,7 +34,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupBottomNavigation() {
 
-        val navGraphIds = listOf(R.navigation.home_nav, R.navigation.search_nav, R.navigation.favorite_nav)
+        val navGraphIds = listOf(
+            R.navigation.home_nav,
+            R.navigation.search_nav,
+            R.navigation.favorite_nav,
+            R.navigation.more_nav
+        )
 
         val controller = binding.mainBottomNav.setupWithNavController(
             navGraphIds,

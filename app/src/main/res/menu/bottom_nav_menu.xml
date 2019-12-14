@@ -14,4 +14,9 @@
         android:id="@+id/favorite_nav"
         android:icon="@drawable/ic_star_bottom_nav"
         android:title="@string/favorite" />
+
+    <item
+        android:id="@+id/more_nav"
+        android:icon="@drawable/ic_more_horiz"
+        android:title="@string/more" />
 </menu>
