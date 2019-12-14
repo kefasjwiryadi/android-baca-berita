@@ -51,7 +51,7 @@ dependencies {
     implementation 'org.kie.modules:org-ocpsoft-prettytime:6.1.0.Beta1'
 
     // Custom tabs
-    implementation 'androidx.browser:browser:1.2.0-beta01'
+    implementation 'androidx.browser:browser:1.2.0-rc01'
 
     kapt "androidx.room:room-compiler:$rootProject.roomVersion"
     kapt "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
