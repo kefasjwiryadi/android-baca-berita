@@ -165,7 +165,8 @@
                     android:visibility="@{viewModel.status == Status.FAILURE ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/article_detail_content" />
+                    app:layout_constraintTop_toBottomOf="@id/article_detail_content"
+                    app:rippleColor="@color/ripple" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
