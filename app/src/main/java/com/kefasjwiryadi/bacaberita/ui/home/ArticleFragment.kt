@@ -33,7 +33,7 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
 
     private var resetList = 0L
 
-    private val articleviewModel: ArticleViewModel by viewModels {
+    private val articleViewModel: ArticleViewModel by viewModels {
         Injection.provideArticleViewModelFactory(context!!, category!!)
     }
 
@@ -60,7 +60,7 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume: $category")
-        articleviewModel.onFragmentResume()
+        articleViewModel.onFragmentResume()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,7 +71,7 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
         subscribeUi()
 
         binding.apply {
-            viewModel = articleviewModel
+            viewModel = articleViewModel
             binding.lifecycleOwner = viewLifecycleOwner
 
             articleList.adapter = adapter
@@ -81,17 +81,17 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
                     val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                     val lastPosition = layoutManager.findLastVisibleItemPosition()
                     if (lastPosition == adapter.itemCount - 1 && adapter.itemCount > 0) {
-                        articleviewModel.onReachEnd()
+                        articleViewModel.onReachEnd()
                     }
                 }
             })
 
             articleRefresh.setOnRefreshListener {
-                articleviewModel.refreshArticles()
+                articleViewModel.refreshArticles()
             }
 
             articleRetryButton.setOnClickListener {
-                articleviewModel.refreshArticles()
+                articleViewModel.refreshArticles()
             }
         }
     }
@@ -121,7 +121,7 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
     }
 
     private fun subscribeUi() {
-        articleviewModel.apply {
+        articleViewModel.apply {
             articles.observe(viewLifecycleOwner, Observer {
                 if (it != null) {
                     Log.d(TAG, "submitList $category: ${it.size}")
@@ -144,7 +144,7 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
                     }
 
                     if (it == Status.FAILURE) {
-                        if (articleviewModel.articles.value.isNullOrEmpty()) {
+                        if (articleViewModel.articles.value.isNullOrEmpty()) {
                             binding.articleNoInternetLayout.visibility = View.VISIBLE
                         } else {
                             Toast.makeText(
@@ -163,7 +163,7 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
             eventResetList.observe(viewLifecycleOwner, Observer {
                 if (it) {
                     resetList = System.currentTimeMillis()
-                    articleviewModel.doneResetList()
+                    articleViewModel.doneResetList()
                 }
             })
         }
@@ -188,9 +188,9 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
 
     override fun onPopupMenuClick(view: View, article: Article) {
         article.showPopupMenu(view, {
-            articleviewModel.addFavoriteArticle(article)
+            articleViewModel.addFavoriteArticle(article)
         }, {
-            articleviewModel.removeFavoriteArticle(article)
+            articleViewModel.removeFavoriteArticle(article)
         })
     }
 }

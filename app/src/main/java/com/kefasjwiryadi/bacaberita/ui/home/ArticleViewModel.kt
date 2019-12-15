@@ -30,7 +30,7 @@ class ArticleViewModel(
     val eventResetList: LiveData<Boolean>
         get() = _eventResetList
 
-    private var loadMoreAllowed = false
+    private var loadMoreAllowed = true
 
     fun onFragmentResume() {
         viewModelScope.launch(Dispatchers.IO) {
