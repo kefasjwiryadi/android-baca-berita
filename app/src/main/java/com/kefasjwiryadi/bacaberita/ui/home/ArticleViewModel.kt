@@ -1,6 +1,5 @@
 package com.kefasjwiryadi.bacaberita.ui.home
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.network.NewsApiService.Companion.PAGE_SIZE_DEF_VALUE
@@ -9,8 +8,7 @@ import com.kefasjwiryadi.bacaberita.network.isNotLoading
 import com.kefasjwiryadi.bacaberita.repository.AppRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
-private const val TAG = "ArticleViewModel"
+import timber.log.Timber
 
 const val MINUTE_TO_MILLIS = 60L * 1000L
 const val REFRESH_RATE = 30L * MINUTE_TO_MILLIS
@@ -45,7 +43,7 @@ class ArticleViewModel(
             if (loadMoreAllowed && _status.value!!.isNotLoading() && hasNextPage()) {
                 val currentResult = appRepository.getArticleFetchResult(category) ?: return@launch
                 val nextPage = currentResult.page + 1
-                Log.d(TAG, "onReachEnd: $nextPage")
+                Timber.d("onReachEnd: $nextPage")
                 if (_status.value == Status.LOADING_MORE) return@launch
                 try {
                     _status.value = Status.LOADING_MORE
@@ -53,7 +51,7 @@ class ArticleViewModel(
                     _status.value = Status.SUCCESS
                 } catch (e: Exception) {
                     _status.value = Status.FAILURE
-                    Log.d(TAG, "onReachEnd: $e")
+                    Timber.d("onReachEnd: $e")
                 }
             }
         }
@@ -69,13 +67,12 @@ class ArticleViewModel(
         val firstRetrievedMillis = currentResult.firstRetrieved
         val timeDiff = System.currentTimeMillis() - firstRetrievedMillis
         return if (timeDiff > REFRESH_RATE) {
-            Log.d(
-                TAG,
+            Timber.d(
                 "shouldRefresh: YES (${System.currentTimeMillis()} - $firstRetrievedMillis > $REFRESH_RATE)"
             )
             true
         } else {
-            Log.d(TAG, "shouldRefresh: NO (time left: ${(REFRESH_RATE - timeDiff) / 1000}s")
+            Timber.d("shouldRefresh: NO (time left: ${(REFRESH_RATE - timeDiff) / 1000}s")
             false
         }
     }
@@ -86,17 +83,17 @@ class ArticleViewModel(
             loadMoreAllowed = false
             if (_status.value!!.isNotLoading()) {
                 _status.value = Status.LOADING
-                Log.d(TAG, "refreshArticles: Loading start")
+                Timber.d("refreshArticles: Loading start")
                 try {
                     appRepository.refreshArticles(category)
                     loadMoreAllowed = true
                     _status.value = Status.SUCCESS
                     _eventResetList.value = true
                 } catch (e: Exception) {
-                    Log.d(TAG, "refreshArticles: $e")
+                    Timber.d("refreshArticles: $e")
                     _status.value = Status.FAILURE
                 }
-                Log.d(TAG, "refreshArticles: Loading finish")
+                Timber.d("refreshArticles: Loading finish")
             }
         }
     }

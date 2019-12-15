@@ -1,7 +1,6 @@
 package com.kefasjwiryadi.bacaberita.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,8 +19,7 @@ import com.kefasjwiryadi.bacaberita.network.Status
 import com.kefasjwiryadi.bacaberita.ui.common.ArticleAdapter
 import com.kefasjwiryadi.bacaberita.ui.common.OnArticleClickListener
 import com.kefasjwiryadi.bacaberita.util.showPopupMenu
-
-private const val TAG = "ArticleFragment"
+import timber.log.Timber
 
 private const val CATEGORY = "category"
 
@@ -44,14 +42,14 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
         arguments?.let {
             category = it.getString(CATEGORY)
         }
-        Log.d(TAG, "onCreate: $category")
+        Timber.d("onCreate: $category")
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "onCreateView: $category")
+        Timber.d("onCreateView: $category")
         binding = ArticleFragmentBinding.inflate(layoutInflater, container, false)
 
         return binding.root
@@ -59,7 +57,7 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "onResume: $category")
+        Timber.d("onResume: $category")
         articleViewModel.onFragmentResume()
     }
 
@@ -102,13 +100,13 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 super.onChanged()
-                Log.d(TAG, "AdapterDataObserver onChanged $category: ")
+                Timber.d("AdapterDataObserver onChanged $category: ")
                 scrollToTop()
             }
 
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
-                Log.d(TAG, "AdapterDataObserver onItemRangeInserted $category: $positionStart")
+                Timber.d("AdapterDataObserver onItemRangeInserted $category: $positionStart")
                 scrollToTop()
             }
 
@@ -124,7 +122,7 @@ class ArticleFragment : Fragment(), OnArticleClickListener {
         articleViewModel.apply {
             articles.observe(viewLifecycleOwner, Observer {
                 if (it != null) {
-                    Log.d(TAG, "submitList $category: ${it.size}")
+                    Timber.d("submitList $category: ${it.size}")
                     adapter.apply {
                         submitList(it)
                         notifyDataSetChanged()

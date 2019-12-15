@@ -1,6 +1,5 @@
 package com.kefasjwiryadi.bacaberita.ui.search
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.domain.ArticleSearchResult
@@ -10,6 +9,7 @@ import com.kefasjwiryadi.bacaberita.network.isNotLoading
 import com.kefasjwiryadi.bacaberita.repository.AppRepository
 import com.kefasjwiryadi.bacaberita.util.AbsentLiveData
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
 
@@ -75,7 +75,7 @@ class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
                     _status.value = Status.SUCCESS
                 } catch (e: Exception) {
                     _status.value = Status.FAILURE
-                    Log.d(TAG, "onReachEnd: $e")
+                    Timber.d("onReachEnd: $e")
                 }
             }
         }
@@ -86,11 +86,11 @@ class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
         viewModelScope.launch {
             try {
                 _status.value = Status.LOADING
-                Log.d(TAG, "searchArticles: Searching query: $query")
+                Timber.d("searchArticles: Searching query: $query")
                 _articles.value = ArrayList()
                 currentSearchResult = appRepository.searchArticles(query, 1)
                 _articles.value = ArrayList(currentSearchResult!!.articles)
-                Log.d(TAG, "searchArticles: Search finished: $query")
+                Timber.d("searchArticles: Search finished: $query")
                 if (_articles.value.isNullOrEmpty()) {
                     _status.value = Status.NO_RESULT
                 } else {
@@ -98,7 +98,7 @@ class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
                 }
             } catch (e: Exception) {
                 _status.value = Status.FAILURE
-                Log.d(TAG, "searchArticles: $e")
+                Timber.d("searchArticles: $e")
             }
         }
     }
@@ -113,10 +113,6 @@ class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
         viewModelScope.launch {
             appRepository.removeFavoriteArticle(article)
         }
-    }
-
-    companion object {
-        private const val TAG = "SearchViewModel"
     }
 }
 

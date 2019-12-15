@@ -1,6 +1,5 @@
 package com.kefasjwiryadi.bacaberita.db
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.room.Dao
@@ -9,15 +8,12 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.domain.ArticleFetchResult
+import timber.log.Timber
 import java.util.*
 import kotlin.collections.HashMap
 
 @Dao
 abstract class ArticleDao {
-
-    companion object {
-        private const val TAG = "ArticleDao"
-    }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insertArticles(articles: List<Article>)
@@ -33,7 +29,7 @@ abstract class ArticleDao {
         urls.forEachIndexed { index, url ->
             originalPosition[url] = index
         }
-        Log.d(TAG, "getArticlesByUrlsOrdered: ${urls.size} $urls")
+        Timber.d("getArticlesByUrlsOrdered: ${urls.size} $urls")
         return Transformations.map(getArticlesByUrls(urls)) { articles ->
             Collections.sort(articles) { article1, article2 ->
                 val pos1 = originalPosition[article1.url]

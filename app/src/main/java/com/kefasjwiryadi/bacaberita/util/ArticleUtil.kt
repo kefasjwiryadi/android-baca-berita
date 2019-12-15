@@ -15,8 +15,6 @@ import org.ocpsoft.prettytime.PrettyTime
 import java.text.SimpleDateFormat
 import java.util.*
 
-private const val TAG = "ArticleUtil"
-
 fun String.cleanContent(): String {
     var inWhiteSpace = false
 

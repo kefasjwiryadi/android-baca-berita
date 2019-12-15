@@ -1,7 +1,6 @@
 package com.kefasjwiryadi.bacaberita.ui.search
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +17,7 @@ import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.ui.common.ArticleAdapter
 import com.kefasjwiryadi.bacaberita.ui.common.OnArticleClickListener
 import com.kefasjwiryadi.bacaberita.util.showPopupMenu
+import timber.log.Timber
 
 class SearchFragment : Fragment(), OnArticleClickListener {
 
@@ -90,7 +90,7 @@ class SearchFragment : Fragment(), OnArticleClickListener {
         searchViewModel.apply {
             articles.observe(viewLifecycleOwner, Observer {
                 it?.let {
-                    Log.d(TAG, "onViewCreated: ${it.size}")
+                    Timber.d("onViewCreated: ${it.size}")
                     adapter.submitList(it)
                 }
             })
@@ -128,10 +128,6 @@ class SearchFragment : Fragment(), OnArticleClickListener {
     override fun onPopupMenuClick(view: View, article: Article) {
         currentPopupView = view
         searchViewModel.setSelectedArticle(article)
-    }
-
-    companion object {
-        private const val TAG = "SearchFragment"
     }
 
 }

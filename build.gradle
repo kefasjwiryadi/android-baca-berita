@@ -39,6 +39,8 @@ buildscript {
         scalarVersion = '2.5.0'
 
         daggerVersion = '2.25.2'
+
+        timberVersion = '4.7.1'
     }
 
     repositories {
@@ -47,7 +49,7 @@ buildscript {
         maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$gradleVersion"
+        classpath "com.android.tools.build:gradle:${gradleVersion}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
     }

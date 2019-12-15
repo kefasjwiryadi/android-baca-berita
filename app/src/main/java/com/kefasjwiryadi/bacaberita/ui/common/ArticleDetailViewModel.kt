@@ -1,12 +1,12 @@
 package com.kefasjwiryadi.bacaberita.ui.common
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.kefasjwiryadi.bacaberita.R
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.network.Status
 import com.kefasjwiryadi.bacaberita.repository.AppRepository
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class ArticleDetailViewModel(
     private val appRepository: AppRepository,
@@ -41,7 +41,7 @@ class ArticleDetailViewModel(
                 appRepository.getFullContent(article)
                 _status.value = Status.SUCCESS
             } catch (e: Exception) {
-                Log.d(TAG, "$e")
+                Timber.d("$e")
                 _status.value = Status.FAILURE
             }
         }
@@ -65,9 +65,6 @@ class ArticleDetailViewModel(
         _eventToast.value = 0
     }
 
-    companion object {
-        private const val TAG = "ArticleDetailViewModel"
-    }
 }
 
 class ArticleDetailViewModelFactory(

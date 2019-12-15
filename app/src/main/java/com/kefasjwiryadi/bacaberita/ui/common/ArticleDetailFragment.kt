@@ -168,7 +168,4 @@ class ArticleDetailFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    companion object {
-        private const val TAG = "ArticleDetailFragment"
-    }
 }

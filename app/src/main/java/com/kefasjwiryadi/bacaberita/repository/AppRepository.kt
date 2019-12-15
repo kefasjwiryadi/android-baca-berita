@@ -1,6 +1,5 @@
 package com.kefasjwiryadi.bacaberita.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.kefasjwiryadi.bacaberita.db.AppDatabase
@@ -13,8 +12,7 @@ import com.kefasjwiryadi.bacaberita.util.clean
 import com.kefasjwiryadi.bacaberita.util.getContent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-
-private const val TAG = "AppRepository"
+import timber.log.Timber
 
 class AppRepository(
     appDatabase: AppDatabase,
@@ -44,30 +42,29 @@ class AppRepository(
 
     suspend fun refreshArticles(category: String) {
         withContext(Dispatchers.IO) {
-            Log.d(TAG, "refreshArticles: getting articles $category from network...")
+            Timber.d("refreshArticles: getting articles $category from network...")
             val articlesContainer =
                 newsApiService.getArticles(category = category, page = 1)
             val articles = articlesContainer.articles
             articles.clean()
-            Log.d(
-                TAG,
+            Timber.d(
                 "refreshArticles: articles from network: \n\t${articles[0]}\n\t${articles[1]}"
             )
-            Log.d(TAG, "refreshArticles: clearing database...")
+            Timber.d("refreshArticles: clearing database...")
 
-            Log.d(TAG, "refreshArticles: inserting articles to database...")
+            Timber.d("refreshArticles: inserting articles to database...")
             articleDao.insertArticles(articles)
             articleDao.insertArticleFetchResult(
                 ArticleFetchResult(category, articles.map {
                     it.url
                 }, articlesContainer.totalResults, 1)
             )
-            Log.d(TAG, "refreshArticles: done")
+            Timber.d("refreshArticles: done")
         }
     }
 
     suspend fun loadNextPage(category: String, page: Int) {
-        Log.d(TAG, "loadNextPage: $category $page")
+        Timber.d("loadNextPage: $category $page")
         withContext(Dispatchers.IO) {
             val articlesContainer =
                 newsApiService.getArticles(category = category, page = page)

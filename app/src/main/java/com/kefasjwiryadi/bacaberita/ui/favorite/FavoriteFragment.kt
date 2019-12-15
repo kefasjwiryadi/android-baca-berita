@@ -1,7 +1,6 @@
 package com.kefasjwiryadi.bacaberita.ui.favorite
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +18,7 @@ import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.ui.common.ArticleAdapter
 import com.kefasjwiryadi.bacaberita.ui.common.OnArticleClickListener
 import com.kefasjwiryadi.bacaberita.util.showPopupMenu
+import timber.log.Timber
 
 class FavoriteFragment : Fragment(), OnArticleClickListener {
 
@@ -38,7 +38,7 @@ class FavoriteFragment : Fragment(), OnArticleClickListener {
     ): View? {
         // Inflate the layout for this fragment
         binding = FavoriteFragmentBinding.inflate(layoutInflater, container, false)
-        Log.d(TAG, "onCreateView: favorite")
+        Timber.d("onCreateView: favorite")
         itemInsertedOnce = false
         return binding.root
     }
@@ -46,7 +46,7 @@ class FavoriteFragment : Fragment(), OnArticleClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d(TAG, "onViewCreated: favorite")
+        Timber.d("onViewCreated: favorite")
 
         setupToolbar()
 
@@ -76,7 +76,7 @@ class FavoriteFragment : Fragment(), OnArticleClickListener {
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
-                Log.d(TAG, "favorite onItemRangeInserted: $positionStart $itemCount")
+                Timber.d("favorite onItemRangeInserted: $positionStart $itemCount")
                 if (itemInsertedOnce) {
                     // Scroll to top if there is a new article added to favorite
                     binding.favoriteArticleList.scrollToPosition(positionStart)
@@ -107,10 +107,6 @@ class FavoriteFragment : Fragment(), OnArticleClickListener {
         }, {
             favoriteViewModel.removeFavoriteArticle(it)
         })
-    }
-
-    companion object {
-        private const val TAG = "FavoriteFragment"
     }
 
 }
