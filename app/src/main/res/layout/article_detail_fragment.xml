@@ -29,10 +29,12 @@
             android:animateLayoutChanges="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/article_detail_collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:contentScrim="?attr/colorPrimary"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:titleEnabled="false"
                 app:toolbarId="@id/article_detail_toolbar">
 
                 <ImageView
@@ -57,6 +59,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/article_detail_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">

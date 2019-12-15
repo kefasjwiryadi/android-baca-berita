@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
+import com.google.android.material.appbar.AppBarLayout
 import com.kefasjwiryadi.bacaberita.R
 import com.kefasjwiryadi.bacaberita.databinding.ArticleDetailFragmentBinding
 import com.kefasjwiryadi.bacaberita.di.Injection
@@ -18,6 +19,7 @@ import com.kefasjwiryadi.bacaberita.util.openWebsiteUrl
 import com.kefasjwiryadi.bacaberita.util.share
 import com.kefasjwiryadi.bacaberita.util.toDateFormat
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
+import kotlin.math.abs
 
 class ArticleDetailFragment : Fragment() {
 
@@ -30,6 +32,8 @@ class ArticleDetailFragment : Fragment() {
     }
 
     private var menu: Menu? = null
+
+    private var currentTitle = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +53,17 @@ class ArticleDetailFragment : Fragment() {
         binding.apply {
             viewModel = articleDetailViewModel
             lifecycleOwner = viewLifecycleOwner
+
+            articleDetailAppbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+                if (abs(verticalOffset) - appBarLayout!!.totalScrollRange == 0) {
+                    // Collapsed
+                    articleDetailToolbar.title = currentTitle
+
+                } else {
+                    // Expanded
+                    articleDetailToolbar.title = ""
+                }
+            })
         }
 
         setupToolbar()
@@ -83,6 +98,8 @@ class ArticleDetailFragment : Fragment() {
                         )
                         articleDetailDescription.text = article.description
                         articleDetailSource.text = article.source?.name
+                        articleDetailToolbar.title = article.source?.name
+                        currentTitle = article.source?.name ?: ""
 
                         // Set content
                         when {
