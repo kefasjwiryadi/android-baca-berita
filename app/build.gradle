@@ -23,6 +23,12 @@ android {
         versionName "1.0"
         vectorDrawables.useSupportLibrary true
 
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+
         buildConfigField("String", "NEWS_API_KEY", credentialProperty['NEWS_API_KEY'])
     }
 
