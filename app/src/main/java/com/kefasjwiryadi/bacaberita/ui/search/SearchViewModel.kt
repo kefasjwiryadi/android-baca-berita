@@ -118,6 +118,7 @@ class SearchViewModel(private val appRepository: AppRepository) : ViewModel() {
 
 class SearchViewModelFactory(private val appRepository: AppRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        @Suppress("UNCHECKED_CAST")
         return SearchViewModel(appRepository) as T
     }
 
