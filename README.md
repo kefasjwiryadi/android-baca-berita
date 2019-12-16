@@ -5,8 +5,7 @@ Baca Berita is an Android application that fetches Indonesian headline news from
 ## Language and Libraries
 - Language: [Kotlin](https://kotlinlang.org/)
 - Architecture: [MVVM](https://developer.android.com/jetpack/docs/guide), [Android Architecture Components](https://developer.android.com/topic/libraries/architecture) ([LiveData](https://developer.android.com/topic/libraries/architecture/livedata) + [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) + [Room](https://developer.android.com/topic/libraries/architecture/room) + [Data Binding](https://developer.android.com/topic/libraries/data-binding/))
-- Restful: [Retrofit](https://square.github.io/retrofit/)
-- JSON: [Gson](https://github.com/google/gson)
+- Networking: [Retrofit](https://square.github.io/retrofit/), [Gson](https://github.com/google/gson)
 - Dependency Injection: [Manual Dependency Injection](https://developer.android.com/training/dependency-injection/manual)
 - Persistence: [SQLite](https://www.sqlite.org/index.html), [Room](https://developer.android.com/topic/libraries/architecture/room)
 - Logging: [Timber](https://github.com/JakeWharton/timber)
