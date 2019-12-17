@@ -127,7 +127,6 @@ class AppRepository(
         }
     }
 
-
     fun getArticleLd(url: String): LiveData<Article> = articleDao.getArticleLd(url)
 
     suspend fun getArticle(url: String): Article? = withContext(Dispatchers.IO) {

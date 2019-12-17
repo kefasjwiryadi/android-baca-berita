@@ -7,6 +7,9 @@ import androidx.room.RoomDatabase
 import com.kefasjwiryadi.bacaberita.domain.Article
 import com.kefasjwiryadi.bacaberita.domain.ArticleFetchResult
 
+/**
+ * Room database for this app.
+ */
 @Database(entities = [Article::class, ArticleFetchResult::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
 
@@ -14,6 +17,9 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
 
+        private const val DATABASE_NAME = "app_database"
+
+        // For singleton instantiation
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
@@ -24,7 +30,7 @@ abstract class AppDatabase : RoomDatabase() {
                     localInstance = Room.databaseBuilder(
                         context,
                         AppDatabase::class.java,
-                        "app_database"
+                        DATABASE_NAME
                     ).fallbackToDestructiveMigration().build()
                     INSTANCE = localInstance
                 }

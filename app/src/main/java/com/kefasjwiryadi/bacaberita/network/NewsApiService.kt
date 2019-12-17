@@ -9,6 +9,9 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.Url
 
+/**
+ * News REST API access points
+ */
 interface NewsApiService {
 
     @GET(TOP_HEADLINES)

@@ -12,6 +12,9 @@ import timber.log.Timber
 import java.util.*
 import kotlin.collections.HashMap
 
+/**
+ * Data Access Object for [Article] and [ArticleFetchResult].
+ */
 @Dao
 abstract class ArticleDao {
 

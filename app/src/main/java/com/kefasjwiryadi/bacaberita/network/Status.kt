@@ -1,5 +1,8 @@
 package com.kefasjwiryadi.bacaberita.network
 
+/**
+ * Represents network status when fetching data.
+ */
 class Status {
 
     companion object {

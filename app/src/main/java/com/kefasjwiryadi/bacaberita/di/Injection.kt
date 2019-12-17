@@ -10,6 +10,9 @@ import com.kefasjwiryadi.bacaberita.ui.favorite.FavoriteViewModelFactory
 import com.kefasjwiryadi.bacaberita.ui.home.ArticleViewModelFactory
 import com.kefasjwiryadi.bacaberita.ui.search.SearchViewModelFactory
 
+/**
+ * Manual dependency injection.
+ */
 object Injection {
 
     private fun provideDatabase(context: Context): AppDatabase {

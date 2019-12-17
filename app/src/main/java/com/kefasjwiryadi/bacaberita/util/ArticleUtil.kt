@@ -15,6 +15,9 @@ import org.ocpsoft.prettytime.PrettyTime
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * Remove \n and \r from content.
+ */
 fun String.cleanContent(): String {
     var inWhiteSpace = false
 
@@ -31,6 +34,9 @@ fun String.cleanContent(): String {
     return sb.toString()
 }
 
+/**
+ * Remove source name from title.
+ */
 fun String.cleanTitle(): String {
     val cleanedTitle = clean("-")
     return if ((cleanedTitle.contains(".co") || cleanedTitle.contains("VIVA")) && cleanedTitle.contains(
@@ -52,17 +58,26 @@ private fun String.clean(pattern: String): String {
     }
 }
 
+/**
+ * Clean title and content of an article.
+ */
 fun Article.clean() {
     title = title?.cleanTitle()
     content = content?.cleanContent()
 }
 
+/**
+ * Clean title and content of a list of article.
+ */
 fun List<Article>.clean() {
     forEach {
         it.clean()
     }
 }
 
+/**
+ * Convert ISO 8601 date format to millis.
+ */
 @SuppressLint("SimpleDateFormat")
 fun String.toMillis(): Long {
     val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -71,6 +86,9 @@ fun String.toMillis(): Long {
     return date.time
 }
 
+/**
+ * Convert ISO 8601 date format to readable date format.
+ */
 @SuppressLint("SimpleDateFormat")
 fun String.toDateFormat(): String {
     val millis = this.toMillis()
@@ -79,12 +97,18 @@ fun String.toDateFormat(): String {
     return dateFormatter.format(Date(millis))
 }
 
+/**
+ * Convert ISO 8601 date format to pretty time (X hours ago, X days ago, etc).
+ */
 fun String.toPrettyTime(): String {
     val millis = this.toMillis()
     val p = PrettyTime(Locale("id"))
     return p.format(Date(millis))
 }
 
+/**
+ * Create share intent based on an article.
+ */
 fun Article.share(context: Context) {
     val sb = StringBuilder(title ?: "")
     description?.let {
@@ -98,6 +122,9 @@ fun Article.share(context: Context) {
         .startChooser()
 }
 
+/**
+ * Parse full HTML of an article from a news site to get only the content.
+ */
 fun String.getContent(partialContent: String): String {
     val doc = Jsoup.parse(this)
     var paragraphs =
