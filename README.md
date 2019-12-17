@@ -8,6 +8,8 @@ Baca Berita is an Android application that fetches Indonesian headline news from
 ![Search screen](screenshots/search_framed.png "Search screen")
 ![Favorite screen](screenshots/favorite_framed.png "Favorite screen")
 ![Splash screen](screenshots/splash_framed.png "Splash screen")
+## Demo
+[https://youtu.be/hp51WvGVcpg](https://youtu.be/hp51WvGVcpg)
 ## Language and Libraries
 - Language: [Kotlin](https://kotlinlang.org/)
 - Architecture: [MVVM](https://developer.android.com/jetpack/docs/guide), [Android Architecture Components](https://developer.android.com/topic/libraries/architecture) ([LiveData](https://developer.android.com/topic/libraries/architecture/livedata) + [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) + [Room](https://developer.android.com/topic/libraries/architecture/room) + [Data Binding](https://developer.android.com/topic/libraries/data-binding/))
