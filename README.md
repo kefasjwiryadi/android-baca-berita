@@ -22,7 +22,7 @@ Baca Berita is an Android application that fetches Indonesian headline news from
 - Image: [Glide](https://bumptech.github.io/glide/)
 ## Development Setup
 API Key is required to run this app.
-- Get API Key from [NewsAPI](https://newsapi.org/)
+- Get API Key from [News API](https://newsapi.org/)
 - Create new file named `credentials.properties` in root folder
 - Add the API key to `credentials.properties`:
 ```
