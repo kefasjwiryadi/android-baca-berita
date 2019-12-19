@@ -49,7 +49,7 @@ interface NewsApiService {
         private const val TOP_HEADLINES = "top-headlines"
         private const val EVERYTHING = "everything"
 
-        private const val QUERY_KEY = "qInTitle"
+        private const val QUERY_KEY = "q"
         private const val QUERY_DEF_VALUE = ""
 
         private const val COUNTRY_KEY = "country"
