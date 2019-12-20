@@ -46,6 +46,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    configurations.all {
+        resolutionStrategy.force 'junit:junit:4.11'
+    }
 }
 
 dependencies {
