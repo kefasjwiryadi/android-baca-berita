@@ -75,6 +75,15 @@
                         android:textColor="@color/colorAccent"
                         android:textStyle="bold" />
 
+                    <TextView
+                        android:id="@+id/more_version_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:textColor="@color/grey"
+                        android:textSize="14sp"
+                        tools:text="Version 1.0-debug" />
+
                 </LinearLayout>
 
             </androidx.core.widget.NestedScrollView>
@@ -92,7 +101,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:websiteLink="@{@string/news_api_url}" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -39,6 +39,6 @@
     <string name="more_information_on_github">More information on GitHub</string>
     <string name="contact_me_via_email">Contact me via e-mail</string>
     <string name="my_email">kefasjwiryadi@gmail.com</string>
-
+    <string name="version_template">Version %s</string>
 
 </resources>

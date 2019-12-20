@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.kefasjwiryadi.bacaberita.BuildConfig
 import com.kefasjwiryadi.bacaberita.R
 import com.kefasjwiryadi.bacaberita.databinding.MoreFragmentBinding
 
@@ -37,6 +38,13 @@ class MoreFragment : Fragment() {
         binding.moreContactText.setOnClickListener {
             composeEmail()
         }
+
+        setVersion()
+    }
+
+    private fun setVersion() {
+        val versionName = BuildConfig.VERSION_NAME + if (BuildConfig.DEBUG) "-debug" else ""
+        binding.moreVersionText.text = getString(R.string.version_template, versionName)
     }
 
     private fun composeEmail() {

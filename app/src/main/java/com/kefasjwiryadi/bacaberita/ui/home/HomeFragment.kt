@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.kefasjwiryadi.bacaberita.BuildConfig
 import com.kefasjwiryadi.bacaberita.R
 import com.kefasjwiryadi.bacaberita.databinding.HomeFragmentBinding
 import timber.log.Timber
@@ -41,7 +42,8 @@ class HomeFragment : Fragment() {
         (activity as AppCompatActivity).setSupportActionBar(binding.homeToolbar)
         binding.homeToolbar.apply {
             setupWithNavController(findNavController())
-            title = resources.getString(R.string.app_name)
+            title =
+                resources.getString(R.string.app_name) + if (BuildConfig.DEBUG) " (Debug)" else ""
         }
     }
 
