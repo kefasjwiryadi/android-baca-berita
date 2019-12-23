@@ -1,6 +1,9 @@
+# Baca Berita
+Baca Berita is an Android application that fetches Indonesian headline news from [News API](https://newsapi.org/). Relased on [Google Play](https://play.google.com/store/apps/details?id=com.kefasjwiryadi.bacaberita).
 
-# Baca Berita :construction:
-Baca Berita is an Android application that fetches Indonesian headline news from [News API](https://newsapi.org/). It is still in its early stages of development.
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" 
+      alt="Download from Google Play" 
+      height="80">](https://play.google.com/store/apps/details?id=com.kefasjwiryadi.bacaberita)
 ## Screenshots
 ![Home screen](screenshots/home_framed.png "Home screen")
 ![Detail 1 screen](screenshots/detail_1_framed.png "Detail 1 screen")
